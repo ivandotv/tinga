@@ -130,9 +130,27 @@ describe('Minilog', () => {
   })
 
   describe('Context', () => {
-    test.todo('Set context after instance creation')
+    test('Set context after instance creation', () => {
+      const ctx = { name: 'Ivan' }
+      const newCtx = { name: 'Marko' }
 
-    test.todo('Get current contenxt')
+      const logger = new Minilog({ ctx, color: false })
+      logger.log()
+      logger.setContext(newCtx)
+      logger.warn()
+
+      expect(console.log).toHaveBeenCalledWith(ctx)
+      expect(console.warn).toHaveBeenCalledWith(newCtx)
+      expect(logger.getContext()).toBe(newCtx)
+    })
+
+    test('Get current context', () => {
+      const ctx = { name: 'Ivan' }
+
+      const logger = new Minilog({ ctx, color: false })
+
+      expect(logger.getContext()).toBe(ctx)
+    })
 
     test('Context is passed to the logging methods', () => {
       const ctx = { name: 'Ivan' }

@@ -180,6 +180,14 @@ export class Minilog implements Minilog {
     this.config.level = resolveLevel(level)
   }
 
+  setContext(ctx: any) {
+    this.config.ctx = ctx
+  }
+
+  getContext() {
+    return this.config.ctx
+  }
+
   allLevels() {
     return { ...logLevels }
   }

@@ -1,7 +1,21 @@
 import { MiniLog } from '../index'
 
+function spyOnConsole() {
+  jest.spyOn(console, 'trace').mockReturnValue()
+  jest.spyOn(console, 'log').mockReturnValue()
+  jest.spyOn(console, 'error').mockReturnValue()
+  jest.spyOn(console, 'warn').mockReturnValue()
+}
+
+function _spyOnMiniLog(instance: MiniLog) {
+  jest.spyOn(instance, 'trace')
+  jest.spyOn(instance, 'log')
+  jest.spyOn(instance, 'log')
+  jest.spyOn(instance, 'error')
+}
+
 describe('Minilog', () => {
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks()
   })
   test('Default log level is "trace"', () => {
@@ -13,4 +27,68 @@ describe('Minilog', () => {
     expect(result.name).toBe('trace')
     expect(result.value).toBe(allLevels['trace'])
   })
+
+  test('All levels above the current level are called', () => {
+    const logger = new MiniLog()
+    const payload = 'hello'
+    spyOnConsole()
+
+    logger.trace(payload)
+    logger.log(payload)
+    logger.debug(payload)
+    logger.info(payload)
+    logger.warn(payload)
+    logger.error(payload)
+
+    expect(console.trace).toHaveBeenCalledTimes(1)
+    expect(console.trace).toHaveBeenCalledWith(payload)
+
+    expect(console.log).toHaveBeenCalledTimes(3)
+    expect(console.log).toHaveBeenNthCalledWith(1, payload)
+    expect(console.log).toHaveBeenNthCalledWith(2, payload)
+    expect(console.log).toHaveBeenNthCalledWith(3, payload)
+
+    expect(console.warn).toHaveBeenCalledTimes(1)
+    expect(console.warn).toHaveBeenCalledWith(payload)
+
+    expect(console.error).toHaveBeenCalledTimes(1)
+    expect(console.error).toHaveBeenCalledWith(payload)
+  })
+
+  test('All levels below the current level are not called', () => {
+    const logger = new MiniLog({ level: 'warn' })
+    const payload = 'hello'
+    spyOnConsole()
+
+    logger.trace(payload)
+    logger.log(payload)
+    logger.debug(payload)
+    logger.info(payload)
+
+    logger.warn(payload)
+    logger.error(payload)
+
+    expect(console.log).not.toHaveBeenCalled()
+
+    expect(console.warn).toHaveBeenCalledTimes(1)
+    expect(console.warn).toHaveBeenCalledWith(payload)
+
+    expect(console.error).toHaveBeenCalledTimes(1)
+    expect(console.error).toHaveBeenCalledWith(payload)
+  })
+
+  test('all arguments are passed to underlying console', () => {
+    const logger = new MiniLog()
+    const payload = ['hello', 'world']
+    spyOnConsole()
+
+    logger.log(...payload)
+
+    expect(console.log).toHaveBeenCalledWith(...payload)
+  })
+
+  test.todo('Context is passed to process data function')
+  test.todo('Ever log method can have custom processing')
+
+  // describe('Beacon', () => {})
 })

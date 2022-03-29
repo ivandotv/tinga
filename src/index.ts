@@ -39,7 +39,7 @@ export class MiniLog implements MiniLog {
     if (userBeacon && userBeacon.url) {
       beacon = {
         url: userBeacon.url,
-        processData: userBeacon.processData || this.processData,
+        processData: userBeacon.processData || this.processBeaconData,
         level: userBeacon.level ? this.resolveLevel(userBeacon.level) : level
       }
     }
@@ -61,11 +61,10 @@ export class MiniLog implements MiniLog {
     return (...args: any[]) => {
       if (!(level >= config.level.value)) return
 
-      console.log('is it bound ? ', this) //TODO -test child
       // @ts-expect-error - not all methods are availalbe directly on console
       console[method](...args)
 
-      const beacon = config.beacon
+      const { beacon } = config
       //only send beacon if default log level is bigger or equal to the beacon level
       if (beacon && config.level.value >= beacon.level.value) {
         const data = beacon.processData(
@@ -80,12 +79,16 @@ export class MiniLog implements MiniLog {
     }
   }
 
-  processData(info: { level: Level; ctx: any }, ...args: any[]) {
+  processBeaconData(info: { level: Level; ctx: any }, ...args: any[]) {
     return {
       name: info.level.name,
       level: info.level.value,
       data: args
     }
+  }
+
+  processData(info: { level: Level; ctx: any }, ...args: any[]) {
+    return args
   }
 
   sendBeacon(url: string, data: any) {

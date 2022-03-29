@@ -30,7 +30,7 @@ describe('Minilog', () => {
 
     const allLevels = logger.allLevels()
 
-    const result = logger.level()
+    const result = logger.getLevel()
     expect(result.name).toBe('trace')
     expect(result.value).toBe(allLevels['trace'])
   })
@@ -114,7 +114,20 @@ describe('Minilog', () => {
     expect(() => new Minilog({ level: 'not_a_level' })).toThrowError()
   })
 
-  test.todo('Set level after logger creation')
+  test('Set log level after instance creation', () => {
+    const logger = new Minilog()
+    const payload = 'hello'
+
+    logger.log(payload)
+
+    logger.setLevel('warn')
+
+    logger.log(payload)
+    logger.log(payload)
+    logger.log(payload)
+
+    expect(console.log).toHaveBeenCalledTimes(1)
+  })
 
   describe('Context', () => {
     test.todo('Set context after instance creation')

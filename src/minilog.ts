@@ -172,8 +172,12 @@ export class Minilog implements Minilog {
     }
   }
 
-  level() {
-    return this.config.level
+  getLevel() {
+    return { ...this.config.level }
+  }
+
+  setLevel(level: LevelsByName) {
+    this.config.level = resolveLevel(level)
   }
 
   allLevels() {

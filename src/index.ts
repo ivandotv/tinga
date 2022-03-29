@@ -7,6 +7,7 @@
 //TODO - child override - create
 //TODO - get - set level
 //TODo - get set beacon level
+//TODO - add label
 
 import { Config, InternaConfig, Level, LevelsByName } from './types'
 

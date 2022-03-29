@@ -3,7 +3,9 @@ import { MiniLog } from '../index'
 
 function spyOnConsole() {
   jest.spyOn(console, 'trace').mockReturnValue()
+  jest.spyOn(console, 'debug').mockReturnValue()
   jest.spyOn(console, 'log').mockReturnValue()
+  jest.spyOn(console, 'info').mockReturnValue()
   jest.spyOn(console, 'error').mockReturnValue()
   jest.spyOn(console, 'warn').mockReturnValue()
 }
@@ -22,6 +24,7 @@ describe('Minilog', () => {
   beforeEach(() => {
     spyOnConsole()
   })
+
   test('Default log level is "trace"', () => {
     const logger = new MiniLog()
 
@@ -79,7 +82,7 @@ describe('Minilog', () => {
     expect(console.error).toHaveBeenCalledWith(payload)
   })
 
-  test('all arguments are passed to underlying console', () => {
+  test('all arguments are passed to underlying console call', () => {
     const logger = new MiniLog()
     const payload = ['hello', 'world']
 
@@ -88,11 +91,35 @@ describe('Minilog', () => {
     expect(console.log).toHaveBeenCalledWith(...payload)
   })
 
-  test.todo('Context is passed to process data function')
-  test.todo('Ever log method can have custom processing')
-  test.todo('Silent level removes all logging')
+  test('Silent level removes all logging', () => {
+    const logger = new MiniLog({ level: 'silent' })
+    const payload = 'hello'
+
+    logger.trace(payload)
+    logger.log(payload)
+    logger.debug(payload)
+    logger.info(payload)
+    logger.warn(payload)
+    logger.error(payload)
+
+    expect(console.log).not.toHaveBeenCalled()
+    expect(console.debug).not.toHaveBeenCalled()
+    expect(console.info).not.toHaveBeenCalled()
+    expect(console.warn).not.toHaveBeenCalled()
+    expect(console.error).not.toHaveBeenCalled()
+  })
+
+  test('Throw error if unsupported level is passed in', () => {
+    // @ts-expect-error delibrate error
+    expect(() => new MiniLog({ level: 'not_a_level' })).toThrowError()
+  })
+
+  test.todo('Set level after logger creation')
 
   describe('Context', () => {
+    test.todo('Set context after instance creation')
+    test.todo('Get current contenxt')
+
     test('Context is passed to loging methods', () => {
       const ctx = { name: 'Ivan' }
       const logger = new MiniLog({ ctx })

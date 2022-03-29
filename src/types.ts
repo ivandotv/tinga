@@ -18,7 +18,7 @@ export type ProcessDataFn = (
 
 export type Config<T = any> = {
   ctx?: T
-  level?: LevelsByValue | LevelsByName
+  level?: LevelsByName
   processData?: ProcessDataFn
   beacon?: {
     url?: string

@@ -49,7 +49,7 @@ module.exports = {
       { blankLine: 'always', prev: '*', next: 'return' }
     ],
     '@typescript-eslint/explicit-function-return-type': [
-      'error',
+      0,
       {
         allowExpressions: true,
         allowTypedFunctionExpressions: true
@@ -68,7 +68,7 @@ module.exports = {
       }
     ],
     '@typescript-eslint/no-non-null-assertion': [2],
-    '@typescript-eslint/no-explicit-any': [2, { ignoreRestArgs: true }],
+    '@typescript-eslint/no-explicit-any': [0, { ignoreRestArgs: true }],
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {

@@ -1,15 +1,21 @@
 import { logLevels } from './index'
 
-export type ProcessBeaconDataFn = <T>(
+export type processRemoteData = (
   info: {
     level: Level
-    ctx?: T
-    label?: string
+    ctx?: any
+    label?: string | undefined
   },
   ...args: any[]
-) => { name: Level['name']; level: Level['value']; data: any }
+) => {
+  name: Level['name']
+  level: Level['value']
+  data: any
+  label?: string | undefined
+  ctx: any
+}
 
-export type ProcessDataFn = (
+export type processData = (
   info: {
     level: Level
     ctx?: any
@@ -23,12 +29,12 @@ export type Config<T = any> = {
   level?: LevelsByName
   color?: boolean
   label?: string
-  processData?: ProcessDataFn
-  beacon?: {
+  processData?: processData
+  remote?: {
     //todo change to remote
     url?: string
     level?: LevelsByValue | LevelsByName
-    processData?: ProcessBeaconDataFn
+    processData?: processRemoteData
   }
 }
 
@@ -37,11 +43,11 @@ export type InternaConfig = {
   level: Level
   color: boolean
   label?: string
-  processData: ProcessDataFn
-  beacon?: {
+  processData: processData
+  remote?: {
     url: string
     level: Level
-    processData: ProcessBeaconDataFn
+    processData: processRemoteData
   }
 }
 

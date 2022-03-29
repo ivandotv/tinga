@@ -1,5 +1,11 @@
 import { Config, InternaConfig, Level, LevelsByName } from './types'
-import { generateStyles, resolveLevel, sendData } from './utils'
+import {
+  generateStyles,
+  prepareData,
+  prepareRemoteData,
+  resolveLevel,
+  sendData
+} from './utils'
 
 export const logLevels = {
   trace: 10,
@@ -25,6 +31,7 @@ export interface Minilog {
   info(...args: any[]): void
   warn(...args: any[]): void
   error(...args: any[]): void
+  // processRemoteData: ProcessBeaconDataFn
 }
 
 //Note the class should be default export but TS doesn't allow default with declaration merging
@@ -35,26 +42,25 @@ export class Minilog implements Minilog {
 
   constructor(config: Config = {} as Config) {
     const level = resolveLevel(config.level || logLevels['trace'])
-    let beacon: InternaConfig['beacon']
+    let remote: InternaConfig['remote']
 
-    const { beacon: userBeacon, color, label, ctx, processData } = config
+    const { remote: customRemote, color, label, ctx } = config
 
-    if (userBeacon && userBeacon.url) {
-      beacon = {
-        url: userBeacon.url,
-        processData:
-          userBeacon.processData || this.processBeaconData.bind(this),
-        level: userBeacon.level ? resolveLevel(userBeacon.level) : level
+    if (customRemote && customRemote.url) {
+      remote = {
+        url: customRemote.url,
+        processData: customRemote.processData || prepareRemoteData,
+        level: customRemote.level ? resolveLevel(customRemote.level) : level
       }
     }
 
     this.config = {
-      ctx: ctx,
+      ctx,
       color: color ?? true,
-      label: label ? `[${label}] ` : undefined,
+      label,
       level,
-      beacon,
-      processData: processData || this.processData.bind(this)
+      remote,
+      processData: config.processData || prepareData
     }
 
     this.trace = this.logIt('trace', resolveLevel('trace'), this.config)
@@ -71,67 +77,46 @@ export class Minilog implements Minilog {
     return (...args: any[]) => {
       if (!(level.value >= config.level.value)) return
 
-      const { label, color } = config
+      const { label, color, ctx, remote: beacon } = config
       const params = []
       const payload = config.processData(
         {
-          ctx: config.ctx,
+          ctx,
           level,
           label
         },
         ...args
       )
-      if (payload.ctx) {
+      if (typeof payload.ctx !== 'undefined') {
         params.push(payload.ctx)
       }
 
       if (color) {
         params.push(
           `%c${level.name}`,
-          // @ts-expect-error no types
+          // @ts-expect-error TODO types
           colors[level.name]
         )
       }
       if (label) {
-        params.push(`${label}`)
+        params.push(`[${label}] `)
       }
 
       // @ts-expect-error - not all methods are availalbe directly on console
       console[method](...params, ...payload.data)
 
-      const { beacon } = config
-      //only send beacon if default log level is bigger or equal to the beacon level
-      if (beacon && config.level.value >= beacon.level.value) {
+      //only send beacon if the default log level is bigger or equal to the beacon level
+      if (beacon && level.value >= beacon.level.value) {
         const data = beacon.processData(
           {
-            ctx: config.ctx,
-            level
+            ctx,
+            level,
+            label
           },
           ...args
         )
         sendData(beacon.url, data)
       }
-    }
-  }
-
-  processBeaconData(
-    info: { level: Level; ctx?: any; label?: string },
-    ...args: any[]
-  ) {
-    return {
-      name: info.level.name,
-      level: info.level.value,
-      data: args
-    }
-  }
-
-  processData(
-    info: { level: Level; ctx?: any; label?: string },
-    ...args: any[]
-  ) {
-    return {
-      ctx: info.ctx,
-      data: args
     }
   }
 

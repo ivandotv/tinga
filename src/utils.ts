@@ -44,3 +44,26 @@ export function sendData(url: string, data: any) {
 export function generateStyles(bg: string, color: string) {
   return `background:${bg};color:${color};padding:2px;border-radius:2px;`
 }
+
+export function prepareRemoteData(
+  { level, ctx, label }: { level: Level; ctx?: any; label?: string },
+  ...args: any[]
+) {
+  return {
+    name: level.name,
+    level: level.value,
+    ctx,
+    label,
+    data: args
+  }
+}
+
+export function prepareData(
+  { ctx }: { level: Level; ctx?: any; label?: string },
+  ...args: any[]
+) {
+  return {
+    ctx,
+    data: args
+  }
+}

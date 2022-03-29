@@ -1,5 +1,6 @@
-import { ProcessDataFn } from 'types'
+import { processData } from 'types'
 import { Minilog } from '../minilog'
+import * as utils from '../utils'
 
 function spyOnConsole() {
   jest.spyOn(console, 'trace').mockReturnValue()
@@ -16,6 +17,7 @@ describe('Minilog', () => {
   })
   beforeEach(() => {
     spyOnConsole()
+    navigator.sendBeacon = jest.fn().mockReturnValue(true)
   })
 
   test('Default log level is "trace"', () => {
@@ -163,7 +165,7 @@ describe('Minilog', () => {
       const modifiedCtx = { name: 'Marko' }
       const restOfTheArguments = [1, 2, 3]
 
-      const processData: ProcessDataFn = (_info, _args) => {
+      const processData: processData = (_info, _args) => {
         return {
           ctx: modifiedCtx,
           data: [...restOfTheArguments]
@@ -191,7 +193,7 @@ describe('Minilog', () => {
       const ctx = { name: 'Ivan' }
       const payload = ['hello', 'world']
 
-      const processData: ProcessDataFn = (info, args) => {
+      const processData: processData = (info, args) => {
         return {
           ctx: info.ctx,
           data: args
@@ -209,7 +211,7 @@ describe('Minilog', () => {
       expect(processDataSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           ctx,
-          label: `[${label}] `,
+          label,
           level: {
             name: 'info',
             value: logger.allLevels()['info']
@@ -218,5 +220,41 @@ describe('Minilog', () => {
         ...payload
       )
     })
+  })
+
+  describe('Remote send', () => {
+    test('Send data', () => {
+      const url = 'some_url'
+      const payload = 'hello world'
+      const ctx = { name: 'ivan' }
+      const label = 'shopping'
+
+      const sendDataSpy = jest.spyOn(utils, 'sendData')
+
+      const logger = new Minilog({
+        color: false,
+        ctx,
+        label,
+        remote: {
+          url
+        }
+      })
+
+      logger.warn(payload)
+
+      expect(navigator.sendBeacon).toHaveBeenCalledTimes(1)
+      expect(sendDataSpy).toHaveBeenCalledWith(url, {
+        name: 'warn',
+        level: logger.allLevels()['warn'],
+        ctx,
+        label,
+        data: [payload]
+      })
+    })
+
+    test.todo('Use custom data function')
+    test.todo('Use custom send function')
+    test.todo('Use the default logging level')
+    test.todo('Use custom remote logging level')
   })
 })

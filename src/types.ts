@@ -12,6 +12,7 @@ export type ProcessDataFn = (
   info: {
     level: Level
     ctx: any
+    label?: string
   },
   ...args: any[]
 ) => { ctx: any; data: any[] }
@@ -19,8 +20,11 @@ export type ProcessDataFn = (
 export type Config<T = any> = {
   ctx?: T
   level?: LevelsByName
+  color?: boolean
+  label?: string
   processData?: ProcessDataFn
   beacon?: {
+    //todo change to remote
     url?: string
     level?: LevelsByValue | LevelsByName
     processData?: ProcessBeaconDataFn
@@ -30,6 +34,8 @@ export type Config<T = any> = {
 export type InternaConfig = {
   ctx: any
   level: Level
+  color: boolean
+  label?: string
   processData: ProcessDataFn
   beacon?: {
     url: string

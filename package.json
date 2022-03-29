@@ -1,17 +1,17 @@
 {
-  "name": "konzola",
+  "name": "minilog",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
   "private": true,
   "author": "Ivan Vlatkovic",
   "license": "MIT",
-  "main": "./dist/prod/konzola.js",
-  "umd": "./dist/prod/konzola.umd.js",
+  "main": "./dist/prod/minilog.js",
+  "umd": "./dist/prod/minilog.umd.js",
   "exports": {
-    "development": "./dist/dev/konzola.esm.js",
-    "import": "./dist/prod/konzola.esm.js",
-    "require": "./dist/prod/konzola.js"
+    "development": "./dist/dev/minilog.esm.js",
+    "import": "./dist/prod/minilog.esm.js",
+    "require": "./dist/prod/minilog.js"
   },
   "types": "./dist/types/index.d.ts",
   "files": [
@@ -37,12 +37,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/konzola.git"
+    "url": "git+https://github.com/your-username/minilog.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/konzola/issues"
+    "url": "https://github.com/your-username/minilog/issues"
   },
-  "homepage": "https://github.com/your-username/konzola#readme",
+  "homepage": "https://github.com/your-username/minilog#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",

@@ -1,5 +1,5 @@
 import { ProcessDataFn } from 'types'
-import { MiniLog } from '../index'
+import { Minilog } from '../minilog'
 
 function spyOnConsole() {
   jest.spyOn(console, 'trace').mockReturnValue()
@@ -10,7 +10,7 @@ function spyOnConsole() {
   jest.spyOn(console, 'warn').mockReturnValue()
 }
 
-function _spyOnMiniLog(instance: MiniLog) {
+function _spyOnMiniLog(instance: Minilog) {
   jest.spyOn(instance, 'trace')
   jest.spyOn(instance, 'log')
   jest.spyOn(instance, 'log')
@@ -26,7 +26,7 @@ describe('Minilog', () => {
   })
 
   test('Default log level is "trace"', () => {
-    const logger = new MiniLog()
+    const logger = new Minilog()
 
     const allLevels = logger.allLevels()
 
@@ -36,7 +36,7 @@ describe('Minilog', () => {
   })
 
   test('All levels above the current level are called', () => {
-    const logger = new MiniLog()
+    const logger = new Minilog({ color: false })
     const payload = 'hello'
 
     logger.trace(payload)
@@ -62,7 +62,7 @@ describe('Minilog', () => {
   })
 
   test('All levels below the current level are not called', () => {
-    const logger = new MiniLog({ level: 'warn' })
+    const logger = new Minilog({ level: 'warn', color: false })
     const payload = 'hello'
 
     logger.trace(payload)
@@ -82,8 +82,8 @@ describe('Minilog', () => {
     expect(console.error).toHaveBeenCalledWith(payload)
   })
 
-  test('all arguments are passed to underlying console call', () => {
-    const logger = new MiniLog()
+  test('All arguments are passed to underlying console call', () => {
+    const logger = new Minilog({ color: false })
     const payload = ['hello', 'world']
 
     logger.log(...payload)
@@ -92,7 +92,7 @@ describe('Minilog', () => {
   })
 
   test('Silent level removes all logging', () => {
-    const logger = new MiniLog({ level: 'silent' })
+    const logger = new Minilog({ level: 'silent' })
     const payload = 'hello'
 
     logger.trace(payload)
@@ -111,18 +111,19 @@ describe('Minilog', () => {
 
   test('Throw error if unsupported level is passed in', () => {
     // @ts-expect-error delibrate error
-    expect(() => new MiniLog({ level: 'not_a_level' })).toThrowError()
+    expect(() => new Minilog({ level: 'not_a_level' })).toThrowError()
   })
 
   test.todo('Set level after logger creation')
 
   describe('Context', () => {
     test.todo('Set context after instance creation')
+
     test.todo('Get current contenxt')
 
-    test('Context is passed to loging methods', () => {
+    test('Context is passed to the logging methods', () => {
       const ctx = { name: 'Ivan' }
-      const logger = new MiniLog({ ctx })
+      const logger = new Minilog({ ctx, color: false })
 
       const payload = ['hello', 'world']
 
@@ -145,7 +146,7 @@ describe('Minilog', () => {
         }
       }
 
-      const logger = new MiniLog({ ctx, processData })
+      const logger = new Minilog({ ctx, processData, color: false })
 
       const payload = ['hello', 'world']
 
@@ -175,19 +176,21 @@ describe('Minilog', () => {
 
       const processDataSpy = jest.fn(processData)
 
-      const logger = new MiniLog({ ctx, processData: processDataSpy })
+      const label = 'test'
+      const logger = new Minilog({ label, ctx, processData: processDataSpy })
       spyOnConsole()
 
       logger.log(...payload)
 
       expect(processDataSpy).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           ctx,
+          label: `[${label}] `,
           level: {
             name: 'info',
             value: logger.allLevels()['info']
           }
-        },
+        }),
         ...payload
       )
     })

@@ -7,179 +7,19 @@
 //TODO - child override - create
 //TODO - get - set level
 //TODo - get set beacon level
-//TODO - add label
+//TODO - label
+//TODO - add label - namespace
 
-import { Config, InternaConfig, Level, LevelsByName } from './types'
+export * from './types'
+export * from './minilog'
 
-export const logLevels = {
-  trace: 10,
-  debug: 20, // map to log
-  info: 30,
-  warn: 40,
-  error: 50,
-  silent: 60
-} as const
-
-export interface MiniLog {
-  trace(...args: any[]): void
-  debug(...args: any[]): void
-  log(...args: any[]): void
-  info(...args: any[]): void
-  warn(...args: any[]): void
-  error(...args: any[]): void
-}
-
-export class MiniLog implements MiniLog {
-  protected config: InternaConfig
-
-  constructor(config: Config = {} as Config) {
-    const level = this.resolveLevel(config.level || logLevels['trace'])
-    let beacon: InternaConfig['beacon']
-    const { beacon: userBeacon } = config
-
-    if (userBeacon && userBeacon.url) {
-      beacon = {
-        url: userBeacon.url,
-        processData:
-          userBeacon.processData || this.processBeaconData.bind(this),
-        level: userBeacon.level ? this.resolveLevel(userBeacon.level) : level
-      }
-    }
-
-    this.config = {
-      ctx: config.ctx,
-      level,
-      beacon,
-      processData: config.processData || this.processData.bind(this)
-    }
-
-    this.trace = this.logIt(
-      'trace',
-      { name: 'trace', value: logLevels['trace'] },
-      this.config
-    )
-    this.debug = this.logIt(
-      'log',
-      { name: 'debug', value: logLevels['debug'] },
-      this.config
-    )
-
-    this.info = this.logIt(
-      'log',
-      { name: 'info', value: logLevels['info'] },
-      this.config
-    )
-
-    this.log = this.info
-
-    this.warn = this.logIt(
-      'warn',
-      { name: 'warn', value: logLevels['warn'] },
-      this.config
-    )
-
-    this.error = this.logIt(
-      'error',
-      { name: 'error', value: logLevels['error'] },
-      this.config
-    )
-  }
-
-  protected logIt(method: string, level: Level, config: InternaConfig) {
-    return (...args: any[]) => {
-      if (!(level.value >= config.level.value)) return
-
-      const params = []
-      const payload = config.processData(
-        {
-          ctx: config.ctx,
-          level
-        },
-        ...args
-      )
-      if (payload.ctx) {
-        params.push(payload.ctx)
-      }
-      params.push(...payload.data)
-
-      // @ts-expect-error - not all methods are availalbe directly on console
-      console[method](...params)
-
-      const { beacon } = config
-      //only send beacon if default log level is bigger or equal to the beacon level
-      if (beacon && config.level.value >= beacon.level.value) {
-        const data = beacon.processData(
-          {
-            ctx: config.ctx,
-            level
-          },
-          ...args
-        )
-        this.sendBeacon(beacon.url, data)
-      }
-    }
-  }
-
-  processBeaconData(info: { level: Level; ctx: any }, ...args: any[]) {
-    return {
-      name: info.level.name,
-      level: info.level.value,
-      data: args
-    }
-  }
-
-  processData(info: { level: Level; ctx: any }, ...args: any[]) {
-    return {
-      ctx: info.ctx,
-      data: args
-    }
-  }
-
-  sendBeacon(url: string, data: any) {
-    if (typeof window !== 'undefined') {
-      const blob = new Blob([JSON.stringify(data)], {
-        type: 'application/json'
-      })
-      navigator.sendBeacon(url, blob)
-    }
-  }
-
-  resolveLevel(level: string | number) {
-    let chosenLevel: Level | undefined
-
-    const isNumber = typeof level === 'number'
-
-    for (const [key, value] of Object.entries(logLevels)) {
-      if (isNumber) {
-        if (value === level) {
-          chosenLevel = {
-            name: key as LevelsByName,
-            value: level
-          }
-          break
-        }
-      } else {
-        if (key === level) {
-          chosenLevel = {
-            name: key as LevelsByName,
-            value
-          }
-          break
-        }
-      }
-    }
-    if (!chosenLevel) {
-      throw new Error(`Unsupported level ${level}`)
-    }
-
-    return chosenLevel
-  }
-
-  level() {
-    return this.config.level
-  }
-
-  allLevels() {
-    return { ...logLevels }
-  }
-}
+// const namespaceColors: {
+//   [key in LogLevelName]: { color: string }
+// } = {
+//   debug: { color: '#8367d3' },
+//   error: { color: '#ff1a1a' },
+//   fatal: { color: '#ff1a1a' },
+//   info: { color: '#3291ff' },
+//   trace: { color: '#999' },
+//   warn: { color: '#f7b955' }
+// }

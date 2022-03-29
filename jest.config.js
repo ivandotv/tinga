@@ -3,7 +3,7 @@ module.exports = {
     '<rootDir>/src/**/?(*.)+(spec|test).[jt]s?(x)',
     '<rootDir>/tests/**/?(*.)+(spec|test).[jt]s?(x)'
   ],
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   moduleDirectories: ['node_modules', 'src'],
   setupFilesAfterEnv: ['<rootDir>/jestSetup.ts'],
   // moduleNameMapper: {

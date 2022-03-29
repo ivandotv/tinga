@@ -39,7 +39,8 @@ export class MiniLog implements MiniLog {
     if (userBeacon && userBeacon.url) {
       beacon = {
         url: userBeacon.url,
-        processData: userBeacon.processData || this.processBeaconData,
+        processData:
+          userBeacon.processData || this.processBeaconData.bind(this),
         level: userBeacon.level ? this.resolveLevel(userBeacon.level) : level
       }
     }
@@ -47,22 +48,61 @@ export class MiniLog implements MiniLog {
     this.config = {
       ctx: config.ctx,
       level,
-      beacon
+      beacon,
+      processData: config.processData || this.processData.bind(this)
     }
-    this.trace = this.logIt('trace', logLevels['trace'], this.config)
-    this.debug = this.logIt('log', logLevels['debug'], this.config)
-    this.log = this.logIt('log', logLevels['debug'], this.config)
-    this.info = this.logIt('log', logLevels['info'], this.config)
-    this.warn = this.logIt('warn', logLevels['warn'], this.config)
-    this.error = this.logIt('error', logLevels['error'], this.config)
+
+    this.trace = this.logIt(
+      'trace',
+      { name: 'trace', value: logLevels['trace'] },
+      this.config
+    )
+    this.debug = this.logIt(
+      'log',
+      { name: 'debug', value: logLevels['debug'] },
+      this.config
+    )
+
+    this.info = this.logIt(
+      'log',
+      { name: 'info', value: logLevels['info'] },
+      this.config
+    )
+
+    this.log = this.info
+
+    this.warn = this.logIt(
+      'warn',
+      { name: 'warn', value: logLevels['warn'] },
+      this.config
+    )
+
+    this.error = this.logIt(
+      'error',
+      { name: 'error', value: logLevels['error'] },
+      this.config
+    )
   }
 
-  protected logIt(method: string, level: number, config: InternaConfig) {
+  protected logIt(method: string, level: Level, config: InternaConfig) {
     return (...args: any[]) => {
-      if (!(level >= config.level.value)) return
+      if (!(level.value >= config.level.value)) return
+
+      const params = []
+      const payload = config.processData(
+        {
+          ctx: config.ctx,
+          level
+        },
+        ...args
+      )
+      if (payload.ctx) {
+        params.push(payload.ctx)
+      }
+      params.push(...payload.data)
 
       // @ts-expect-error - not all methods are availalbe directly on console
-      console[method](...args)
+      console[method](...params)
 
       const { beacon } = config
       //only send beacon if default log level is bigger or equal to the beacon level
@@ -70,7 +110,7 @@ export class MiniLog implements MiniLog {
         const data = beacon.processData(
           {
             ctx: config.ctx,
-            level: beacon.level
+            level
           },
           ...args
         )
@@ -88,7 +128,10 @@ export class MiniLog implements MiniLog {
   }
 
   processData(info: { level: Level; ctx: any }, ...args: any[]) {
-    return args
+    return {
+      ctx: info.ctx,
+      data: args
+    }
   }
 
   sendBeacon(url: string, data: any) {

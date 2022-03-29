@@ -1,6 +1,6 @@
 import { logLevels } from './index'
 
-export type ProcessDataFn = <T>(
+export type ProcessBeaconDataFn = <T>(
   info: {
     level: Level
     ctx: T
@@ -8,23 +8,33 @@ export type ProcessDataFn = <T>(
   ...args: any[]
 ) => { name: Level['name']; level: Level['value']; data: any }
 
+export type ProcessDataFn = (
+  info: {
+    level: Level
+    ctx: any
+  },
+  ...args: any[]
+) => { ctx: any; data: any[] }
+
 export type Config<T = any> = {
   ctx?: T
   level?: LevelsByValue | LevelsByName
+  processData?: ProcessDataFn
   beacon?: {
     url?: string
     level?: LevelsByValue | LevelsByName
-    processData?: ProcessDataFn
+    processData?: ProcessBeaconDataFn
   }
 }
 
 export type InternaConfig = {
   ctx: any
   level: Level
+  processData: ProcessDataFn
   beacon?: {
     url: string
     level: Level
-    processData: ProcessDataFn
+    processData: ProcessBeaconDataFn
   }
 }
 

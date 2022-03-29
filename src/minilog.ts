@@ -1,17 +1,14 @@
 import { Config, InternaConfig, Level, LevelsByName } from './types'
+import { generateStyles, resolveLevel, sendData } from './utils'
 
 export const logLevels = {
   trace: 10,
-  debug: 20, // maps to log
+  debug: 20,
   info: 30,
   warn: 40,
   error: 50,
   silent: 60
 } as const
-
-function generateStyles(bg: string, color: string) {
-  return `background:${bg};color:${color};padding:2px;border-radius:2px;`
-}
 
 const colors = {
   trace: generateStyles('#555', '#fff'),
@@ -19,37 +16,6 @@ const colors = {
   info: generateStyles('#1f5bcc', '#fff'),
   warn: generateStyles('#f5a623', '#000'),
   error: generateStyles('#f05033', '#fff')
-}
-
-function resolveLevel(level: string | number) {
-  let chosenLevel: Level | undefined
-
-  const isNumber = typeof level === 'number'
-
-  for (const [key, value] of Object.entries(logLevels)) {
-    if (isNumber) {
-      if (value === level) {
-        chosenLevel = {
-          name: key as LevelsByName,
-          value: level
-        }
-        break
-      }
-    } else {
-      if (key === level) {
-        chosenLevel = {
-          name: key as LevelsByName,
-          value
-        }
-        break
-      }
-    }
-  }
-  if (!chosenLevel) {
-    throw new Error(`Unsupported level ${level}`)
-  }
-
-  return chosenLevel
 }
 
 export interface Minilog {
@@ -143,12 +109,15 @@ export class Minilog implements Minilog {
           },
           ...args
         )
-        this.sendBeacon(beacon.url, data)
+        sendData(beacon.url, data)
       }
     }
   }
 
-  processBeaconData(info: { level: Level; ctx: any }, ...args: any[]) {
+  processBeaconData(
+    info: { level: Level; ctx?: any; label?: string },
+    ...args: any[]
+  ) {
     return {
       name: info.level.name,
       level: info.level.value,
@@ -156,19 +125,13 @@ export class Minilog implements Minilog {
     }
   }
 
-  processData(info: { level: Level; ctx: any }, ...args: any[]) {
+  processData(
+    info: { level: Level; ctx?: any; label?: string },
+    ...args: any[]
+  ) {
     return {
       ctx: info.ctx,
       data: args
-    }
-  }
-
-  sendBeacon(url: string, data: any) {
-    if (typeof window !== 'undefined') {
-      const blob = new Blob([JSON.stringify(data)], {
-        type: 'application/json'
-      })
-      navigator.sendBeacon(url, blob)
     }
   }
 

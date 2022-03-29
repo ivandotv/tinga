@@ -3,7 +3,8 @@ import { logLevels } from './index'
 export type ProcessBeaconDataFn = <T>(
   info: {
     level: Level
-    ctx: T
+    ctx?: T
+    label?: string
   },
   ...args: any[]
 ) => { name: Level['name']; level: Level['value']; data: any }
@@ -11,7 +12,7 @@ export type ProcessBeaconDataFn = <T>(
 export type ProcessDataFn = (
   info: {
     level: Level
-    ctx: any
+    ctx?: any
     label?: string
   },
   ...args: any[]

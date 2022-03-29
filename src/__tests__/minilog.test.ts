@@ -10,13 +10,6 @@ function spyOnConsole() {
   jest.spyOn(console, 'warn').mockReturnValue()
 }
 
-function _spyOnMiniLog(instance: Minilog) {
-  jest.spyOn(instance, 'trace')
-  jest.spyOn(instance, 'log')
-  jest.spyOn(instance, 'log')
-  jest.spyOn(instance, 'error')
-}
-
 describe('Minilog', () => {
   afterEach(() => {
     jest.clearAllMocks()

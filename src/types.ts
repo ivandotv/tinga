@@ -59,6 +59,8 @@ export type LevelsByValue = ExtractKeys<typeof logLevels>
 
 export type LevelsByName = ExtractValues<typeof logLevels>
 
+export type LogLevels = typeof logLevels
+
 export type Level = {
   name: LevelsByName
   value: LevelsByValue

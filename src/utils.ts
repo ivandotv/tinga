@@ -1,7 +1,6 @@
-import { logLevels } from './minilog'
-import { Level, LevelsByName } from './types'
+import { Level, LevelsByName, LogLevels } from './types'
 
-export function resolveLevel(level: string | number) {
+export function resolveLevel(level: string | number, logLevels: LogLevels) {
   let chosenLevel: Level | undefined
 
   const isNumber = typeof level === 'number'

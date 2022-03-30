@@ -41,7 +41,7 @@ export class Minilog implements Minilog {
   protected config: InternaConfig
 
   constructor(config: Config = {} as Config) {
-    const level = resolveLevel(config.level || logLevels['trace'])
+    const level = resolveLevel(config.level || logLevels['trace'], logLevels)
     let remote: InternaConfig['remote']
 
     const { remote: customRemote, color, label, ctx } = config
@@ -51,7 +51,7 @@ export class Minilog implements Minilog {
         url: customRemote.url,
         processData: customRemote.processData || prepareRemoteData,
         level: customRemote.level
-          ? resolveLevel(customRemote.level)
+          ? resolveLevel(customRemote.level, logLevels)
           : (() => {
               throw new Error('Remote logging level not present')
             })(),
@@ -68,14 +68,26 @@ export class Minilog implements Minilog {
       processData: config.processData || prepareData
     }
 
-    this.trace = this.logIt('trace', resolveLevel('trace'), this.config)
-    this.debug = this.logIt('log', resolveLevel('debug'), this.config)
+    this.trace = this.logIt(
+      'trace',
+      resolveLevel('trace', logLevels),
+      this.config
+    )
+    this.debug = this.logIt(
+      'log',
+      resolveLevel('debug', logLevels),
+      this.config
+    )
 
-    this.info = this.logIt('log', resolveLevel('info'), this.config)
+    this.info = this.logIt('log', resolveLevel('info', logLevels), this.config)
     this.log = this.info //just an alias
 
-    this.warn = this.logIt('warn', resolveLevel('warn'), this.config)
-    this.error = this.logIt('error', resolveLevel('error'), this.config)
+    this.warn = this.logIt('warn', resolveLevel('warn', logLevels), this.config)
+    this.error = this.logIt(
+      'error',
+      resolveLevel('error', logLevels),
+      this.config
+    )
   }
 
   protected logIt(method: string, level: Level, config: InternaConfig) {
@@ -147,19 +159,22 @@ export class Minilog implements Minilog {
   }
 
   setLevel(level: LevelsByName) {
-    this.config.level = resolveLevel(level)
+    this.config.level = resolveLevel(level, logLevels)
   }
 
   getRemoteLevel() {
-    return this.config.remote ? { ...this.config.remote?.level } : undefined
+    const { remote } = this.config
+
+    return remote ? { ...this.config.remote?.level } : undefined
   }
 
   setRemoveLevel(level: LevelsByName) {
-    if (!this.config.remote) {
-      throw new Error('remote is not set')
+    const { remote } = this.config
+    if (!remote) {
+      throw new Error('remote not set')
     }
 
-    this.config.remote.level = resolveLevel(level)
+    remote.level = resolveLevel(level, logLevels)
   }
 
   setContext(ctx: any) {

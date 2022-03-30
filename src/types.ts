@@ -1,33 +1,33 @@
 import { logLevels } from './index'
 
-export type processRemoteData<T = any> = (
+export type processRemoteData<T = any, K = any> = (
   info: {
     level: Level
-    ctx?: any
+    ctx?: T
     label?: string | undefined
   },
   ...args: any[]
-) => T
+) => K
 
-export type processData = (
+export type processData<T = any, K = any> = (
   info: {
     level: Level
-    ctx?: any
+    ctx?: T
     label?: string
   },
   ...args: any[]
-) => { ctx: any; data: any[] }
+) => { ctx: K; data: any[] }
 
 export type Config<T = any> = {
   ctx?: T
   level?: LevelsByName
   color?: boolean
   label?: string
-  processData?: processData
+  processData?: processData<T>
   remote?: {
     url: string
     level: LevelsByValue | LevelsByName
-    processData?: processRemoteData
+    processData?: processRemoteData<T>
     sendData?: sendData
   }
 }

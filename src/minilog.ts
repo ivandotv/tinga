@@ -150,6 +150,18 @@ export class Minilog implements Minilog {
     this.config.level = resolveLevel(level)
   }
 
+  getRemoteLevel() {
+    return this.config.remote ? { ...this.config.remote?.level } : undefined
+  }
+
+  setRemoveLevel(level: LevelsByName) {
+    if (!this.config.remote) {
+      throw new Error('remote is not set')
+    }
+
+    this.config.remote.level = resolveLevel(level)
+  }
+
   setContext(ctx: any) {
     this.config.ctx = ctx
   }

@@ -426,7 +426,61 @@ describe('Minilog', () => {
               url: 'some_url'
             }
           })
-      ).toThrowError()
+      ).toThrow()
+    })
+
+    test('Set and get remote level', () => {
+      const sendDataSpy = jest.fn()
+      const url = 'some_url'
+      const newLevel = 'warn'
+      const logger = new Minilog({
+        color: false,
+        remote: {
+          url,
+          level: 'silent',
+          sendData: sendDataSpy
+        }
+      })
+
+      logger.setRemoveLevel(newLevel)
+
+      expect(logger.getRemoteLevel()).toEqual({
+        name: newLevel,
+        value: logger.allLevels()[newLevel]
+      })
+    })
+
+    test('If remote is not set, throw when trying to set remote level', () => {
+      const logger = new Minilog({
+        color: false
+      })
+
+      expect(() => logger.setRemoveLevel('debug')).toThrow()
+    })
+
+    test('When remote level is changed, it immediately goes in to effect', () => {
+      const sendDataSpy = jest.fn()
+      const payload = 'hello'
+      const url = 'some_url'
+      const logger = new Minilog({
+        color: false,
+        remote: {
+          url,
+          level: 'silent',
+          sendData: sendDataSpy
+        }
+      })
+
+      logger.trace(payload)
+      logger.debug(payload)
+      logger.info(payload)
+      logger.warn(payload)
+      logger.error(payload)
+
+      logger.setRemoveLevel('debug')
+      logger.debug(payload)
+
+      expect(sendDataSpy).toHaveBeenCalledTimes(1)
     })
   })
 })

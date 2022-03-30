@@ -1,4 +1,4 @@
-import { processData } from 'types'
+import { processData } from '../types'
 import { Minilog } from '../minilog'
 import * as utils from '../utils'
 
@@ -164,7 +164,7 @@ describe('Minilog', () => {
       const ctx = { name: 'Ivan' }
       const modifiedCtx = { name: 'Marko' }
       const restOfTheArguments = [1, 2, 3]
-
+      const payload = ['hello', 'world']
       const processData: processData = (_info, _args) => {
         return {
           ctx: modifiedCtx,
@@ -173,8 +173,6 @@ describe('Minilog', () => {
       }
 
       const logger = new Minilog({ ctx, processData, color: false })
-
-      const payload = ['hello', 'world']
 
       logger.log(...payload)
       logger.warn(...payload)
@@ -189,22 +187,19 @@ describe('Minilog', () => {
       )
     })
 
-    test('Custom processing function is called with correct arguments', () => {
+    test('Custom processing function is called with the correct arguments', () => {
+      spyOnConsole()
       const ctx = { name: 'Ivan' }
       const payload = ['hello', 'world']
-
       const processData: processData = (info, args) => {
         return {
           ctx: info.ctx,
           data: args
         }
       }
-
       const processDataSpy = jest.fn(processData)
-
       const label = 'test'
       const logger = new Minilog({ label, ctx, processData: processDataSpy })
-      spyOnConsole()
 
       logger.log(...payload)
 
@@ -228,14 +223,13 @@ describe('Minilog', () => {
       const payload = 'hello world'
       const ctx = { name: 'ivan' }
       const label = 'shopping'
-
       const sendDataSpy = jest.spyOn(utils, 'sendData')
-
       const logger = new Minilog({
         color: false,
         ctx,
         label,
         remote: {
+          level: 'trace',
           url
         }
       })
@@ -252,9 +246,187 @@ describe('Minilog', () => {
       })
     })
 
-    test.todo('Use custom data function')
-    test.todo('Use custom send function')
-    test.todo('Use the default logging level')
-    test.todo('Use custom remote logging level')
+    test('Use custom data function', () => {
+      const url = 'some_url'
+      const payload = 'hello world'
+      const ctx = { name: 'ivan' }
+      const label = 'shopping'
+      const newLabel = 'dancing'
+      const level = 123
+      const name = 'critical'
+
+      const sendDataSpy = jest.spyOn(utils, 'sendData')
+
+      const logger = new Minilog({
+        color: false,
+        ctx,
+        label,
+        remote: {
+          url,
+          level: 'trace',
+          processData: (_info, ...args: any[]) => {
+            return {
+              label: newLabel,
+              name,
+              level,
+              data: args
+            }
+          }
+        }
+      })
+
+      logger.warn(payload)
+
+      expect(navigator.sendBeacon).toHaveBeenCalledTimes(1)
+      expect(sendDataSpy).toHaveBeenCalledWith(url, {
+        label: newLabel,
+        name,
+        level,
+        data: [payload]
+      })
+    })
+
+    test('Use custom send function', () => {
+      const url = 'some_url'
+      const payload = 'hello world'
+      const ctx = { name: 'ivan' }
+      const label = 'shopping'
+      const sendDataSpy = jest.fn()
+      const logger = new Minilog({
+        color: false,
+        ctx,
+        label,
+        remote: {
+          url,
+          level: 'trace',
+          sendData: sendDataSpy
+        }
+      })
+
+      logger.warn(payload)
+
+      expect(sendDataSpy).toHaveBeenCalledWith(url, {
+        name: 'warn',
+        level: logger.allLevels()['warn'],
+        ctx,
+        label,
+        data: [payload]
+      })
+    })
+
+    test('All levels above the current level are called', () => {
+      const sendDataSpy = jest.fn()
+      const payload = 'hello'
+      const url = 'some_url'
+      const level = 'info'
+      const logger = new Minilog({
+        color: false,
+
+        remote: {
+          url,
+          level,
+          sendData: sendDataSpy
+        }
+      })
+
+      logger.trace(payload)
+      logger.debug(payload)
+
+      logger.info(payload)
+      logger.warn(payload)
+      logger.error(payload)
+
+      expect(sendDataSpy).toHaveBeenCalledTimes(3)
+      expect(sendDataSpy).toHaveBeenNthCalledWith(
+        1,
+        url,
+        expect.objectContaining({
+          name: 'info',
+          data: [payload]
+        })
+      )
+      expect(sendDataSpy).toHaveBeenNthCalledWith(
+        2,
+        url,
+        expect.objectContaining({
+          name: 'warn',
+          data: [payload]
+        })
+      )
+
+      expect(sendDataSpy).toHaveBeenNthCalledWith(
+        3,
+        url,
+        expect.objectContaining({
+          name: 'error',
+          data: [payload]
+        })
+      )
+    })
+
+    test('When default level is silent, remote send still works', () => {
+      const sendDataSpy = jest.fn()
+      const payload = 'hello'
+      const url = 'some_url'
+      const logger = new Minilog({
+        color: false,
+        level: 'silent',
+        remote: {
+          url,
+          level: 'warn',
+          sendData: sendDataSpy
+        }
+      })
+
+      logger.trace(payload)
+      logger.debug(payload)
+      logger.info(payload)
+      logger.warn(payload)
+
+      expect(sendDataSpy).toHaveBeenCalledTimes(1)
+      expect(sendDataSpy).toHaveBeenNthCalledWith(
+        1,
+        url,
+        expect.objectContaining({
+          name: 'warn',
+          data: [payload]
+        })
+      )
+    })
+
+    test('Remote silent level disables sending', () => {
+      const sendDataSpy = jest.fn()
+      const payload = 'hello'
+      const url = 'some_url'
+      const logger = new Minilog({
+        color: false,
+        remote: {
+          url,
+          level: 'silent',
+          sendData: sendDataSpy
+        }
+      })
+
+      logger.trace(payload)
+      logger.debug(payload)
+      logger.info(payload)
+      logger.warn(payload)
+      logger.error(payload)
+
+      expect(sendDataSpy).toHaveBeenCalledTimes(0)
+    })
+
+    test('Throw if remote level is not specified', () => {
+      expect(
+        () =>
+          new Minilog({
+            color: false,
+            // @ts-expect-error - forced error
+            remote: {
+              url: 'some_url'
+            }
+          })
+      ).toThrowError()
+    })
   })
 })

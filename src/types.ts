@@ -1,19 +1,13 @@
 import { logLevels } from './index'
 
-export type processRemoteData = (
+export type processRemoteData<T = any> = (
   info: {
     level: Level
     ctx?: any
     label?: string | undefined
   },
   ...args: any[]
-) => {
-  name: Level['name']
-  level: Level['value']
-  data: any
-  label?: string | undefined
-  ctx: any
-}
+) => T
 
 export type processData = (
   info: {
@@ -31,12 +25,13 @@ export type Config<T = any> = {
   label?: string
   processData?: processData
   remote?: {
-    //todo change to remote
-    url?: string
-    level?: LevelsByValue | LevelsByName
+    url: string
+    level: LevelsByValue | LevelsByName
     processData?: processRemoteData
+    sendData?: sendData
   }
 }
+export type sendData = <T>(url: string, data: T) => void
 
 export type InternaConfig = {
   ctx: any
@@ -48,6 +43,7 @@ export type InternaConfig = {
     url: string
     level: Level
     processData: processRemoteData
+    sendData: sendData
   }
 }
 

@@ -45,25 +45,25 @@ export function generateStyles(bg: string, color: string) {
   return `background:${bg};color:${color};padding:2px;border-radius:2px;`
 }
 
-export function prepareRemoteData(
+export function prepareRemoteData<T = any>(
   { level, ctx, label }: { level: Level; ctx?: any; label?: string },
   ...args: any[]
-) {
+): T {
   return {
     name: level.name,
     level: level.value,
     ctx,
     label,
     data: args
-  }
+  } as unknown as T
 }
 
-export function prepareData(
+export function prepareData<T = any>(
   { ctx }: { level: Level; ctx?: any; label?: string },
   ...args: any[]
-) {
+): T {
   return {
     ctx,
     data: args
-  }
+  } as unknown as T
 }

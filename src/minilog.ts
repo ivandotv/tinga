@@ -46,11 +46,16 @@ export class Minilog implements Minilog {
 
     const { remote: customRemote, color, label, ctx } = config
 
-    if (customRemote && customRemote.url) {
+    if (customRemote?.url) {
       remote = {
         url: customRemote.url,
         processData: customRemote.processData || prepareRemoteData,
-        level: customRemote.level ? resolveLevel(customRemote.level) : level
+        level: customRemote.level
+          ? resolveLevel(customRemote.level)
+          : (() => {
+              throw new Error('Remote logging level not present')
+            })(),
+        sendData: customRemote.sendData || sendData
       }
     }
 
@@ -75,49 +80,66 @@ export class Minilog implements Minilog {
 
   protected logIt(method: string, level: Level, config: InternaConfig) {
     return (...args: any[]) => {
-      if (!(level.value >= config.level.value)) return
-
-      const { label, color, ctx, remote: beacon } = config
-      const params = []
-      const payload = config.processData(
-        {
-          ctx,
-          level,
-          label
-        },
-        ...args
-      )
-      if (typeof payload.ctx !== 'undefined') {
-        params.push(payload.ctx)
+      if (level.value >= config.level.value) {
+        this.logLocal(method, level, config, args)
       }
 
-      if (color) {
-        params.push(
-          `%c${level.name}`,
-          // @ts-expect-error TODO types
-          colors[level.name]
-        )
-      }
-      if (label) {
-        params.push(`[${label}] `)
-      }
-
-      // @ts-expect-error - not all methods are availalbe directly on console
-      console[method](...params, ...payload.data)
-
-      //only send beacon if the default log level is bigger or equal to the beacon level
-      if (beacon && level.value >= beacon.level.value) {
-        const data = beacon.processData(
-          {
-            ctx,
-            level,
-            label
-          },
-          ...args
-        )
-        sendData(beacon.url, data)
+      if (config.remote && level.value >= config.remote.level.value) {
+        this.logRemote(level, config, args)
       }
     }
+  }
+
+  protected logLocal(
+    method: string,
+    level: Level,
+    config: InternaConfig,
+    args: any[]
+  ) {
+    const { label, color, ctx } = config
+    const params = []
+    const payload = config.processData(
+      {
+        ctx,
+        level,
+        label
+      },
+      ...args
+    )
+    if (typeof payload.ctx !== 'undefined') {
+      params.push(payload.ctx)
+    }
+
+    if (color) {
+      params.push(
+        `%c${level.name}`,
+        // @ts-expect-error TODO types
+        colors[level.name]
+      )
+    }
+    if (label) {
+      params.push(`[${label}] `)
+    }
+
+    // @ts-expect-error - not all methods are availalbe directly on console
+    console[method](...params, ...payload.data)
+  }
+
+  protected logRemote(level: Level, config: InternaConfig, args: any[]) {
+    //only send beacon if the default log level is bigger or equal to the beacon level
+    const { processData, url, sendData } = config.remote!
+    const { ctx, label } = config
+
+    const data = processData(
+      {
+        ctx,
+        level,
+        label
+      },
+      ...args
+    )
+
+    sendData(url, data)
   }
 
   getLevel() {

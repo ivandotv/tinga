@@ -1,5 +1,0 @@
----
-'tinga': major
----
-
-Initial release

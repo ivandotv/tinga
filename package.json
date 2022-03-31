@@ -1,17 +1,25 @@
 {
-  "name": "minilog",
+  "name": "tinga",
   "version": "0.0.0",
-  "description": "",
-  "keywords": [],
-  "private": true,
+  "description": "Small 1kb logging module made primarily for the browser.Supports multiple log levels, and automatic sending of logs to the remote server.",
+  "keywords": [
+    "log",
+    "logger",
+    "logging",
+    "browser logger",
+    "browser log",
+    "pino",
+    "sendbeacon"
+  ],
+  "private": false,
   "author": "Ivan Vlatkovic",
   "license": "MIT",
-  "main": "./dist/prod/minilog.js",
-  "umd": "./dist/prod/minilog.umd.js",
+  "main": "./dist/prod/tinga.js",
+  "umd": "./dist/prod/tinga.umd.js",
   "exports": {
-    "development": "./dist/dev/minilog.esm.js",
-    "import": "./dist/prod/minilog.esm.js",
-    "require": "./dist/prod/minilog.js"
+    "development": "./dist/dev/tinga.esm.js",
+    "import": "./dist/prod/tinga.esm.js",
+    "require": "./dist/prod/tinga.js"
   },
   "types": "./dist/types/index.d.ts",
   "files": [
@@ -37,12 +45,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/minilog.git"
+    "url": "git+https://github.com/your-username/tinga.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/minilog/issues"
+    "url": "https://github.com/your-username/tinga/issues"
   },
-  "homepage": "https://github.com/your-username/minilog#readme",
+  "homepage": "https://github.com/your-username/tinga#readme",
   "devDependencies": {
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",

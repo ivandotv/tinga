@@ -28,7 +28,7 @@ export type Config<T = any> = {
     url: string
     level: LevelsByValue | LevelsByName
     processData?: processRemoteData<T>
-    sendData?: sendData
+    send?: sendData
   }
 }
 export type sendData = <T>(url: string, data: T) => void
@@ -43,7 +43,7 @@ export type InternaConfig = {
     url: string
     level: Level
     processData: processRemoteData
-    sendData: sendData
+    send: sendData
   }
 }
 

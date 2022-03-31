@@ -299,7 +299,7 @@ describe('Minilog', () => {
         remote: {
           url,
           level: 'trace',
-          sendData: sendDataSpy
+          send: sendDataSpy
         }
       })
 
@@ -325,7 +325,7 @@ describe('Minilog', () => {
         remote: {
           url,
           level,
-          sendData: sendDataSpy
+          send: sendDataSpy
         }
       })
 
@@ -374,7 +374,7 @@ describe('Minilog', () => {
         remote: {
           url,
           level: 'warn',
-          sendData: sendDataSpy
+          send: sendDataSpy
         }
       })
 
@@ -403,7 +403,7 @@ describe('Minilog', () => {
         remote: {
           url,
           level: 'silent',
-          sendData: sendDataSpy
+          send: sendDataSpy
         }
       })
 
@@ -438,7 +438,7 @@ describe('Minilog', () => {
         remote: {
           url,
           level: 'silent',
-          sendData: sendDataSpy
+          send: sendDataSpy
         }
       })
 
@@ -467,7 +467,7 @@ describe('Minilog', () => {
         remote: {
           url,
           level: 'silent',
-          sendData: sendDataSpy
+          send: sendDataSpy
         }
       })
 

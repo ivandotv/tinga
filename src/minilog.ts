@@ -55,7 +55,7 @@ export class Minilog implements Minilog {
           : (() => {
               throw new Error('Remote logging level not present')
             })(),
-        sendData: customRemote.sendData || sendData
+        send: customRemote.send || sendData
       }
     }
 
@@ -139,7 +139,7 @@ export class Minilog implements Minilog {
 
   protected logRemote(level: Level, config: InternaConfig, args: any[]) {
     //only send beacon if the default log level is bigger or equal to the beacon level
-    const { processData, url, sendData } = config.remote!
+    const { processData, url, send: sendData } = config.remote!
     const { ctx, label } = config
 
     const data = processData(

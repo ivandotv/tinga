@@ -74,8 +74,6 @@
     "lint-staged": "^12.3.7",
     "microbundle": "^0.14.2",
     "prettier": "^2.6.1",
-    "shx": "^0.3.4",
-    "typedoc": "^0.22.13",
-    "typedoc-plugin-markdown": "^3.11.14"
+    "shx": "^0.3.4"
   }
 }

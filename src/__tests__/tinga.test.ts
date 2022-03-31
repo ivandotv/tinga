@@ -1,5 +1,5 @@
 import { processData } from '../types'
-import { Minilog } from '../minilog'
+import { Tinga } from '../tinga'
 import * as utils from '../utils'
 
 function spyOnConsole() {
@@ -11,7 +11,7 @@ function spyOnConsole() {
   jest.spyOn(console, 'warn').mockReturnValue()
 }
 
-describe('Minilog', () => {
+describe('Tinga', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -21,7 +21,7 @@ describe('Minilog', () => {
   })
 
   test('Default log level is "trace"', () => {
-    const logger = new Minilog()
+    const logger = new Tinga()
 
     const allLevels = logger.allLevels()
 
@@ -31,7 +31,7 @@ describe('Minilog', () => {
   })
 
   test('All levels above the current level are called', () => {
-    const logger = new Minilog({ color: false })
+    const logger = new Tinga({ color: false })
     const payload = 'hello'
 
     logger.trace(payload)
@@ -57,7 +57,7 @@ describe('Minilog', () => {
   })
 
   test('All levels below the current level are not called', () => {
-    const logger = new Minilog({ level: 'warn', color: false })
+    const logger = new Tinga({ level: 'warn', color: false })
     const payload = 'hello'
 
     logger.trace(payload)
@@ -78,7 +78,7 @@ describe('Minilog', () => {
   })
 
   test('All arguments are passed to underlying console call', () => {
-    const logger = new Minilog({ color: false })
+    const logger = new Tinga({ color: false })
     const payload = ['hello', 'world']
 
     logger.log(...payload)
@@ -87,7 +87,7 @@ describe('Minilog', () => {
   })
 
   test('Silent level removes all logging', () => {
-    const logger = new Minilog({ level: 'silent' })
+    const logger = new Tinga({ level: 'silent' })
     const payload = 'hello'
 
     logger.trace(payload)
@@ -106,11 +106,11 @@ describe('Minilog', () => {
 
   test('Throw error if unsupported level is passed in', () => {
     // @ts-expect-error delibrate error
-    expect(() => new Minilog({ level: 'not_a_level' })).toThrowError()
+    expect(() => new Tinga({ level: 'not_a_level' })).toThrowError()
   })
 
   test('Set log level after instance creation', () => {
-    const logger = new Minilog()
+    const logger = new Tinga()
     const payload = 'hello'
 
     logger.log(payload)
@@ -129,7 +129,7 @@ describe('Minilog', () => {
       const ctx = { name: 'Ivan' }
       const newCtx = { name: 'Marko' }
 
-      const logger = new Minilog({ ctx, color: false })
+      const logger = new Tinga({ ctx, color: false })
       logger.log()
       logger.setContext(newCtx)
       logger.warn()
@@ -142,14 +142,14 @@ describe('Minilog', () => {
     test('Get current context', () => {
       const ctx = { name: 'Ivan' }
 
-      const logger = new Minilog({ ctx, color: false })
+      const logger = new Tinga({ ctx, color: false })
 
       expect(logger.getContext()).toBe(ctx)
     })
 
     test('Context is passed to the logging methods', () => {
       const ctx = { name: 'Ivan' }
-      const logger = new Minilog({ ctx, color: false })
+      const logger = new Tinga({ ctx, color: false })
 
       const payload = ['hello', 'world']
 
@@ -172,7 +172,7 @@ describe('Minilog', () => {
         }
       }
 
-      const logger = new Minilog({ ctx, processData, color: false })
+      const logger = new Tinga({ ctx, processData, color: false })
 
       logger.log(...payload)
       logger.warn(...payload)
@@ -199,7 +199,7 @@ describe('Minilog', () => {
       }
       const processDataSpy = jest.fn(processData)
       const label = 'test'
-      const logger = new Minilog({ label, ctx, processData: processDataSpy })
+      const logger = new Tinga({ label, ctx, processData: processDataSpy })
 
       logger.log(...payload)
 
@@ -224,7 +224,7 @@ describe('Minilog', () => {
       const ctx = { name: 'ivan' }
       const label = 'shopping'
       const sendDataSpy = jest.spyOn(utils, 'sendData')
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
         ctx,
         label,
@@ -257,7 +257,7 @@ describe('Minilog', () => {
 
       const sendDataSpy = jest.spyOn(utils, 'sendData')
 
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
         ctx,
         label,
@@ -292,7 +292,7 @@ describe('Minilog', () => {
       const ctx = { name: 'ivan' }
       const label = 'shopping'
       const sendDataSpy = jest.fn()
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
         ctx,
         label,
@@ -319,7 +319,7 @@ describe('Minilog', () => {
       const payload = 'hello'
       const url = 'some_url'
       const level = 'info'
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
 
         remote: {
@@ -368,7 +368,7 @@ describe('Minilog', () => {
       const sendDataSpy = jest.fn()
       const payload = 'hello'
       const url = 'some_url'
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
         level: 'silent',
         remote: {
@@ -398,7 +398,7 @@ describe('Minilog', () => {
       const sendDataSpy = jest.fn()
       const payload = 'hello'
       const url = 'some_url'
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
         remote: {
           url,
@@ -419,7 +419,7 @@ describe('Minilog', () => {
     test('Throw if remote level is not specified', () => {
       expect(
         () =>
-          new Minilog({
+          new Tinga({
             color: false,
             // @ts-expect-error - forced error
             remote: {
@@ -433,7 +433,7 @@ describe('Minilog', () => {
       const sendDataSpy = jest.fn()
       const url = 'some_url'
       const newLevel = 'warn'
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
         remote: {
           url,
@@ -451,7 +451,7 @@ describe('Minilog', () => {
     })
 
     test('If remote is not set, throw when trying to set remote level', () => {
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false
       })
 
@@ -462,7 +462,7 @@ describe('Minilog', () => {
       const sendDataSpy = jest.fn()
       const payload = 'hello'
       const url = 'some_url'
-      const logger = new Minilog({
+      const logger = new Tinga({
         color: false,
         remote: {
           url,

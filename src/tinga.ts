@@ -24,7 +24,7 @@ const colors = {
   error: generateStyles('#f05033', '#fff')
 }
 
-export interface Minilog {
+export interface Tinga {
   trace(...args: any[]): void
   debug(...args: any[]): void
   log(...args: any[]): void
@@ -34,10 +34,10 @@ export interface Minilog {
   // processRemoteData: ProcessBeaconDataFn
 }
 
-//Note the class should be default export but TS doesn't allow default with declaration merging
+//Note: the class should be default export but TS doesn't allow default with declaration merging
 //https://github.com/microsoft/TypeScript/issues/14080
 
-export class Minilog implements Minilog {
+export class Tinga implements Tinga {
   protected config: InternaConfig
 
   constructor(config: Config = {} as Config) {

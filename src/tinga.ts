@@ -36,6 +36,7 @@ export class Tinga implements Tinga {
     info: 30,
     warn: 40,
     error: 50,
+    critical: 60,
     silent: 100
   } as const
 
@@ -94,6 +95,10 @@ export class Tinga implements Tinga {
 
   error(...args: any[]) {
     this.logIt('error', 'error', args)
+  }
+
+  critical(...args: any[]) {
+    this.logIt('error', 'critical', args)
   }
 
   protected logIt(method: string, levelName: LevelsByName, args: any[]) {

@@ -1,5 +1,5 @@
-import { processData } from '../types'
 import { Tinga } from '../tinga'
+import { processData } from '../types'
 import * as utils from '../utils'
 
 function spyOnConsole() {
@@ -40,6 +40,7 @@ describe('Tinga', () => {
     logger.info(payload)
     logger.warn(payload)
     logger.error(payload)
+    logger.critical(payload)
 
     expect(console.trace).toHaveBeenCalledTimes(1)
     expect(console.trace).toHaveBeenCalledWith(payload)
@@ -52,8 +53,9 @@ describe('Tinga', () => {
     expect(console.warn).toHaveBeenCalledTimes(1)
     expect(console.warn).toHaveBeenCalledWith(payload)
 
-    expect(console.error).toHaveBeenCalledTimes(1)
-    expect(console.error).toHaveBeenCalledWith(payload)
+    expect(console.error).toHaveBeenCalledTimes(2)
+    expect(console.error).toHaveBeenNthCalledWith(1, payload)
+    expect(console.error).toHaveBeenNthCalledWith(2, payload)
   })
 
   test('All levels below the current level are not called', () => {

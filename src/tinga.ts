@@ -36,7 +36,7 @@ export class Tinga implements Tinga {
     info: 30,
     warn: 40,
     error: 50,
-    silent: 60
+    silent: 100
   } as const
 
   constructor(config: Config = {} as Config) {
@@ -189,5 +189,9 @@ export class Tinga implements Tinga {
 
   getLevels() {
     return { ...this.levels }
+  }
+
+  hasLevel(name: string) {
+    return this.levels[name]
   }
 }

@@ -1,5 +1,11 @@
 # tinga
 
+## 2.1.0
+
+### Minor Changes
+
+- 4858417: Add level "critical" to better align with the pino log levels.
+
 ## 2.0.0
 
 ### Major Changes

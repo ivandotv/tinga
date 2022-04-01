@@ -195,8 +195,4 @@ export class Tinga implements Tinga {
   getLevels() {
     return { ...this.levels }
   }
-
-  hasLevel(name: string) {
-    return this.levels[name]
-  }
 }

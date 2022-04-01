@@ -1,4 +1,4 @@
-import { logLevels } from './index'
+import { type Tinga } from './index'
 
 export type processRemoteData<T = any, K = any> = (
   info: {
@@ -55,11 +55,11 @@ export type ExtractValues<T> = {
   [I in keyof T]: I
 }[keyof T]
 
-export type LevelsByValue = ExtractKeys<typeof logLevels>
+export type LevelsByValue = ExtractKeys<Tinga['levels']>
 
-export type LevelsByName = ExtractValues<typeof logLevels>
+export type LevelsByName = ExtractValues<Tinga['levels']>
 
-export type LogLevels = typeof logLevels
+export type LogLevels = Tinga['levels']
 
 export type Level = {
   name: LevelsByName

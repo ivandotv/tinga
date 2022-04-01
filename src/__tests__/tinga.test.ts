@@ -23,11 +23,11 @@ describe('Tinga', () => {
   test('Default log level is "trace"', () => {
     const logger = new Tinga()
 
-    const allLevels = logger.allLevels()
+    const levels = logger.getLevels()
 
     const result = logger.getLevel()
     expect(result.name).toBe('trace')
-    expect(result.value).toBe(allLevels['trace'])
+    expect(result.value).toBe(levels['trace'])
   })
 
   test('All levels above the current level are called', () => {
@@ -209,7 +209,7 @@ describe('Tinga', () => {
           label,
           level: {
             name: 'info',
-            value: logger.allLevels()['info']
+            value: logger.getLevels()['info']
           }
         }),
         ...payload
@@ -239,7 +239,7 @@ describe('Tinga', () => {
       expect(navigator.sendBeacon).toHaveBeenCalledTimes(1)
       expect(sendDataSpy).toHaveBeenCalledWith(url, {
         name: 'warn',
-        level: logger.allLevels()['warn'],
+        level: logger.getLevels()['warn'],
         ctx,
         label,
         data: [payload]
@@ -307,7 +307,7 @@ describe('Tinga', () => {
 
       expect(sendDataSpy).toHaveBeenCalledWith(url, {
         name: 'warn',
-        level: logger.allLevels()['warn'],
+        level: logger.getLevels()['warn'],
         ctx,
         label,
         data: [payload]
@@ -446,7 +446,7 @@ describe('Tinga', () => {
 
       expect(logger.getRemoteLevel()).toEqual({
         name: newLevel,
-        value: logger.allLevels()[newLevel]
+        value: logger.getLevels()[newLevel]
       })
     })
 

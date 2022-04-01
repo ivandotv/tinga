@@ -7,15 +7,6 @@ import {
   sendData
 } from './utils'
 
-export const logLevels = {
-  trace: 10,
-  debug: 20,
-  info: 30,
-  warn: 40,
-  error: 50,
-  silent: 60
-} as const
-
 const colors = {
   trace: generateStyles('#555', '#fff'),
   debug: generateStyles('#7627f2', '#fff'),
@@ -31,7 +22,6 @@ export interface Tinga {
   info(...args: any[]): void
   warn(...args: any[]): void
   error(...args: any[]): void
-  // processRemoteData: ProcessBeaconDataFn
 }
 
 //Note: the class should be default export but TS doesn't allow default with declaration merging
@@ -40,8 +30,20 @@ export interface Tinga {
 export class Tinga implements Tinga {
   protected config: InternaConfig
 
+  protected levels = {
+    trace: 10,
+    debug: 20,
+    info: 30,
+    warn: 40,
+    error: 50,
+    silent: 60
+  } as const
+
   constructor(config: Config = {} as Config) {
-    const level = resolveLevel(config.level || logLevels['trace'], logLevels)
+    const level = resolveLevel(
+      config.level || this.levels['trace'],
+      this.levels
+    )
     let remote: InternaConfig['remote']
 
     const { remote: customRemote, color, label, ctx } = config
@@ -51,7 +53,7 @@ export class Tinga implements Tinga {
         url: customRemote.url,
         processData: customRemote.processData || prepareRemoteData,
         level: customRemote.level
-          ? resolveLevel(customRemote.level, logLevels)
+          ? resolveLevel(customRemote.level, this.levels)
           : (() => {
               throw new Error('Remote logging level not present')
             })(),
@@ -67,50 +69,50 @@ export class Tinga implements Tinga {
       remote,
       processData: config.processData || prepareData
     }
-
-    this.trace = this.logIt(
-      'trace',
-      resolveLevel('trace', logLevels),
-      this.config
-    )
-    this.debug = this.logIt(
-      'log',
-      resolveLevel('debug', logLevels),
-      this.config
-    )
-
-    this.info = this.logIt('log', resolveLevel('info', logLevels), this.config)
-    this.log = this.info //just an alias
-
-    this.warn = this.logIt('warn', resolveLevel('warn', logLevels), this.config)
-    this.error = this.logIt(
-      'error',
-      resolveLevel('error', logLevels),
-      this.config
-    )
   }
 
-  protected logIt(method: string, level: Level, config: InternaConfig) {
-    return (...args: any[]) => {
-      if (level.value >= config.level.value) {
-        this.logLocal(method, level, config, args)
-      }
+  trace(...args: any[]) {
+    this.logIt('trace', 'trace', args)
+  }
 
-      if (config.remote && level.value >= config.remote.level.value) {
-        this.logRemote(level, config, args)
-      }
+  debug(...args: any[]) {
+    this.logIt('log', 'debug', args)
+  }
+
+  info(...args: any[]) {
+    this.logIt('log', 'info', args)
+  }
+
+  //alias for info
+  log(...args: any[]) {
+    this.info(...args)
+  }
+
+  warn(...args: any[]) {
+    this.logIt('warn', 'warn', args)
+  }
+
+  error(...args: any[]) {
+    this.logIt('error', 'error', args)
+  }
+
+  protected logIt(method: string, levelName: LevelsByName, args: any[]) {
+    const level: Level = { name: levelName, value: this.levels[levelName] }
+    const { level: currentLevel, remote } = this.config
+
+    if (level.value >= currentLevel.value) {
+      this.logLocal(method, level, args)
+    }
+
+    if (remote && level.value >= remote.level.value) {
+      this.logRemote(level, args)
     }
   }
 
-  protected logLocal(
-    method: string,
-    level: Level,
-    config: InternaConfig,
-    args: any[]
-  ) {
-    const { label, color, ctx } = config
+  protected logLocal(method: string, level: Level, args: any[]) {
+    const { label, color, ctx } = this.config
     const params = []
-    const payload = config.processData(
+    const payload = this.config.processData(
       {
         ctx,
         level,
@@ -137,10 +139,10 @@ export class Tinga implements Tinga {
     console[method](...params, ...payload.data)
   }
 
-  protected logRemote(level: Level, config: InternaConfig, args: any[]) {
+  protected logRemote(level: Level, args: any[]) {
     //only send beacon if the default log level is bigger or equal to the beacon level
-    const { processData, url, send: sendData } = config.remote!
-    const { ctx, label } = config
+    const { processData, url, send: sendData } = this.config.remote!
+    const { ctx, label } = this.config
 
     const data = processData(
       {
@@ -159,13 +161,13 @@ export class Tinga implements Tinga {
   }
 
   setLevel(level: LevelsByName) {
-    this.config.level = resolveLevel(level, logLevels)
+    this.config.level = resolveLevel(level, this.levels)
   }
 
   getRemoteLevel() {
     const { remote } = this.config
 
-    return remote ? { ...this.config.remote?.level } : undefined
+    return remote ? { ...remote?.level } : undefined
   }
 
   setRemoveLevel(level: LevelsByName) {
@@ -174,7 +176,7 @@ export class Tinga implements Tinga {
       throw new Error('remote not set')
     }
 
-    remote.level = resolveLevel(level, logLevels)
+    remote.level = resolveLevel(level, this.levels)
   }
 
   setContext(ctx: any) {
@@ -185,7 +187,7 @@ export class Tinga implements Tinga {
     return this.config.ctx
   }
 
-  allLevels() {
-    return { ...logLevels }
+  getLevels() {
+    return { ...this.levels }
   }
 }

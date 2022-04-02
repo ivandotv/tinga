@@ -1,4 +1,4 @@
-import { type Tinga } from './index'
+import { type Tinga } from './tinga'
 
 export type processRemoteData<T = any, K = any> = (
   info: {

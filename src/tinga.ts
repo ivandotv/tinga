@@ -12,7 +12,8 @@ const colors = {
   debug: generateStyles('#7627f2', '#fff'),
   info: generateStyles('#1f5bcc', '#fff'),
   warn: generateStyles('#f5a623', '#000'),
-  error: generateStyles('#f05033', '#fff')
+  error: generateStyles('#f05033', '#fff'),
+  critical: generateStyles('#f05033', '#fff')
 }
 
 export interface Tinga {

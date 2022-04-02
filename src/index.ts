@@ -1,2 +1,4 @@
 export * from './types'
-export * from './tinga'
+import { Tinga } from './tinga'
+
+export default Tinga

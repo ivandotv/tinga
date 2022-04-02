@@ -42,6 +42,10 @@ export class Tinga implements Tinga {
   } as const
 
   constructor(config: Config = {} as Config) {
+    this.config = this.createConfig(config)
+  }
+
+  protected createConfig(config: Config) {
     const level = resolveLevel(
       config.level || this.levels['trace'],
       this.levels
@@ -63,7 +67,7 @@ export class Tinga implements Tinga {
       }
     }
 
-    this.config = {
+    return {
       ctx,
       color: color ?? true,
       label,

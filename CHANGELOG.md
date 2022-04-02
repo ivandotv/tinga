@@ -1,5 +1,15 @@
 # tinga
 
+## 3.0.0
+
+### Major Changes
+
+- e58c1cc: Make the class the default export
+
+### Minor Changes
+
+- 66a3fa4: Implement child logger functionality
+
 ## 2.1.0
 
 ### Minor Changes

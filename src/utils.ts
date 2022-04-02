@@ -3,10 +3,8 @@ import { Level, LevelsByName, LogLevels } from './types'
 export function resolveLevel(level: string | number, logLevels: LogLevels) {
   let chosenLevel: Level | undefined
 
-  const isNumber = typeof level === 'number'
-
   for (const [key, value] of Object.entries(logLevels)) {
-    if (isNumber) {
+    if (typeof level === 'number') {
       if (value === level) {
         chosenLevel = {
           name: key as LevelsByName,

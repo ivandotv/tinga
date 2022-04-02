@@ -1,4 +1,10 @@
-import { Config, InternaConfig, Level, LevelsByName } from './types'
+import {
+  ChildConfig,
+  Config,
+  InternaConfig,
+  Level,
+  LevelsByName
+} from './types'
 import {
   generateStyles,
   prepareData,
@@ -28,7 +34,7 @@ export interface Tinga {
 //Note: the class should be default export but TS doesn't allow default with declaration merging
 //https://github.com/microsoft/TypeScript/issues/14080
 
-export class Tinga implements Tinga {
+export class Tinga<T = any> implements Tinga {
   protected config: InternaConfig
 
   protected levels = {
@@ -41,7 +47,7 @@ export class Tinga implements Tinga {
     silent: 100
   } as const
 
-  constructor(config: Config = {} as Config) {
+  constructor(config: Config<T> = {}) {
     this.config = this.createConfig(config)
   }
 
@@ -61,7 +67,7 @@ export class Tinga implements Tinga {
         level: customRemote.level
           ? resolveLevel(customRemote.level, this.levels)
           : (() => {
-              throw new Error('Remote logging level not present')
+              throw new Error('Remote level not set')
             })(),
         send: customRemote.send || sendData
       }
@@ -193,11 +199,21 @@ export class Tinga implements Tinga {
     this.config.ctx = ctx
   }
 
-  getContext() {
+  getContext(): T {
     return this.config.ctx
   }
 
   getLevels() {
     return { ...this.levels }
+  }
+
+  child<K = void>(config: ChildConfig<K, T> = {} as ChildConfig<K, T>) {
+    const cfg: Config = { ...config }
+    if (typeof config.ctx === 'function') {
+      // @ts-expect-error - type overload problem
+      cfg.ctx = config.ctx(this.config.ctx)
+    }
+
+    return new Tinga<K extends void ? T : K>(cfg)
   }
 }

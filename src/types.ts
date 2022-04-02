@@ -31,10 +31,12 @@ export type Config<T = any> = {
     send?: sendData
   }
 }
-export type sendData = <T>(url: string, data: T) => void
 
-export type InternaConfig = {
-  ctx: any
+export type ChildConfig<T = void, TParent = any> = Omit<Config<T>, 'ctx'> & {
+  ctx: ((ctx: TParent) => T) | T
+}
+export type InternaConfig<T = any> = {
+  ctx: T
   level: Level
   color: boolean
   label?: string
@@ -46,6 +48,7 @@ export type InternaConfig = {
     send: sendData
   }
 }
+export type sendData = <T>(url: string, data: T) => void
 
 export type ExtractKeys<T> = {
   [I in keyof T]: T[I]

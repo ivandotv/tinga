@@ -1,5 +1,5 @@
 import { Tinga } from '../tinga'
-import { processData } from '../types'
+import { Config, processData } from '../types'
 import * as utils from '../utils'
 
 function spyOnConsole() {
@@ -483,6 +483,32 @@ describe('Tinga', () => {
       logger.debug(payload)
 
       expect(sendDataSpy).toHaveBeenCalledTimes(1)
+    })
+  })
+  describe('Child logger', () => {
+    test('is instance of Tinga', () => {
+      const parent = new Tinga()
+      const child = parent.child()
+
+      expect(child).toBeInstanceOf(Tinga)
+    })
+
+    test('can derive context from parent context', () => {
+      const cfg: Config<{ name: string }> = { ctx: { name: 'ivan' } }
+      const parent = new Tinga<{ name: string }>(cfg)
+      const childCtx = {
+        nick: 'ivandotv'
+      }
+      const child = parent.child({
+        ctx: (ctx) => {
+          return {
+            ...ctx,
+            ...childCtx
+          }
+        }
+      })
+      const result = child.getContext()
+      expect(result).toEqual({ ...childCtx, ...parent.getContext() })
     })
   })
 })

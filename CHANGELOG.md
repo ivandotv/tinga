@@ -1,5 +1,17 @@
 # tinga
 
+## 4.0.0
+
+### Major Changes
+
+- 123c752: Fix grammar error on public method.
+- a1ae24c: Change `processData` and `processRemoteData` call signatures
+- cfefeea: Fix grammar errors on types
+
+### Patch Changes
+
+- 0b74bcf: fix order of arguments to console log
+
 ## 3.0.0
 
 ### Major Changes

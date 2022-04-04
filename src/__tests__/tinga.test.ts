@@ -193,10 +193,10 @@ describe('Tinga', () => {
       spyOnConsole()
       const ctx = { name: 'Ivan' }
       const payload = ['hello', 'world']
-      const processData: ProcessData = (info, args) => {
+      const processData: ProcessData = (ctx, data) => {
         return {
-          ctx: info.ctx,
-          data: args
+          ctx,
+          data
         }
       }
       const processDataSpy = jest.fn(processData)
@@ -206,15 +206,15 @@ describe('Tinga', () => {
       logger.log(...payload)
 
       expect(processDataSpy).toHaveBeenCalledWith(
+        ctx,
+        payload,
         expect.objectContaining({
-          ctx,
           label,
           level: {
             name: 'info',
             value: logger.getLevels()['info']
           }
-        }),
-        ...payload
+        })
       )
     })
   })
@@ -266,12 +266,13 @@ describe('Tinga', () => {
         remote: {
           url,
           level: 'trace',
-          processData: (_info, ...args: any[]) => {
+          processData: (ctx, data) => {
             return {
+              ctx,
+              data,
               label: newLabel,
               name,
-              level,
-              data: args
+              level
             }
           }
         }
@@ -281,6 +282,7 @@ describe('Tinga', () => {
 
       expect(navigator.sendBeacon).toHaveBeenCalledTimes(1)
       expect(sendDataSpy).toHaveBeenCalledWith(url, {
+        ctx,
         label: newLabel,
         name,
         level,

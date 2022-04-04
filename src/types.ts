@@ -1,21 +1,21 @@
 import type Tinga from './tinga'
 
 export type ProcessRemoteData<T = any, K = any> = (
+  ctx: T,
+  args: any[],
   info: {
     level: Level
-    ctx?: T
     label?: string | undefined
-  },
-  ...args: any[]
+  }
 ) => K
 
 export type ProcessData<T = any, K = any> = (
+  ctx: T,
+  args: any[],
   info: {
     level: Level
-    ctx?: T
     label?: string
-  },
-  ...args: any[]
+  }
 ) => { ctx: K; data: any[] }
 
 export type Config<T = any> = {

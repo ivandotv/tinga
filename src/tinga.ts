@@ -7,8 +7,8 @@ import {
 } from './types'
 import {
   generateStyles,
-  prepareData,
-  prepareRemoteData,
+  processData,
+  processRemoteData,
   resolveLevel,
   sendData
 } from './utils'
@@ -60,7 +60,7 @@ export default class Tinga<T = any> implements Tinga {
     if (customRemote?.url) {
       remote = {
         url: customRemote.url,
-        processData: customRemote.processData || prepareRemoteData,
+        processData: customRemote.processData || processRemoteData,
         level: customRemote.level
           ? resolveLevel(customRemote.level, this.levels)
           : (() => {
@@ -76,7 +76,7 @@ export default class Tinga<T = any> implements Tinga {
       label,
       level,
       remote,
-      processData: config.processData || prepareData
+      processData: config.processData || processData
     }
   }
 
@@ -164,16 +164,12 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - arguments to be logged
    */
   protected logLocal(method: string, level: Level, args: any[]) {
-    const { label, color, ctx } = this.config
+    const { label, color, ctx, processData } = this.config
     const params = []
-    const payload = this.config.processData(
-      {
-        ctx,
-        level,
-        label
-      },
-      ...args
-    )
+    const payload = processData(ctx, args, {
+      level,
+      label
+    })
     if (typeof payload.ctx !== 'undefined') {
       params.push(payload.ctx)
     }
@@ -203,14 +199,10 @@ export default class Tinga<T = any> implements Tinga {
     const { processData, url, send: sendData } = this.config.remote!
     const { ctx, label } = this.config
 
-    const data = processData(
-      {
-        ctx,
-        level,
-        label
-      },
-      ...args
-    )
+    const data = processData(ctx, args, {
+      level,
+      label
+    })
 
     sendData(url, data)
   }

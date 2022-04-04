@@ -1,4 +1,10 @@
-import { Level, LevelsByName, LogLevels } from './types'
+import {
+  Level,
+  LevelsByName,
+  LogLevels,
+  ProcessData,
+  ProcessRemoteData
+} from './types'
 
 export function resolveLevel(level: string | number, logLevels: LogLevels) {
   let chosenLevel: Level | undefined
@@ -42,25 +48,23 @@ export function generateStyles(bg: string, color: string) {
   return `background:${bg};color:${color};padding:2px;border-radius:2px;`
 }
 
-export function prepareRemoteData<T = any>(
-  { level, ctx, label }: { level: Level; ctx?: any; label?: string },
-  ...args: any[]
-): T {
+export const processRemoteData: ProcessRemoteData = function processRemoteData(
+  ctx,
+  data,
+  { level, label }
+) {
   return {
+    ctx,
+    data,
     name: level.name,
     level: level.value,
-    ctx,
-    label,
-    data: args
-  } as unknown as T
+    label: label
+  }
 }
 
-export function prepareData<T = any>(
-  { ctx }: { level: Level; ctx?: any; label?: string },
-  ...args: any[]
-): T {
+export const processData: ProcessData = function processData(ctx, data: any[]) {
   return {
     ctx,
-    data: args
-  } as unknown as T
+    data
+  }
 }

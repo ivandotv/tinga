@@ -23,7 +23,7 @@ const colors = {
 }
 
 /**
- * Tinga - small logging module for the brower
+ * Tinga - small logging module for the browser
  * @typeParam T  - context (payload) to be used with the logger
  */
 export default class Tinga<T = any> implements Tinga {
@@ -43,6 +43,11 @@ export default class Tinga<T = any> implements Tinga {
     this.config = this.createConfig(config)
   }
 
+  /**
+   * Creates config
+   * @param config - user-provided configuration for the object
+   * @returns final configuration
+   */
   protected createConfig(config: Config) {
     const level = resolveLevel(
       config.level || this.levels['trace'],
@@ -75,35 +80,70 @@ export default class Tinga<T = any> implements Tinga {
     }
   }
 
+  /**
+   * Log via "trace" level
+   * @param args - console log arguments
+   */
   trace(...args: any[]) {
     this.logIt('trace', 'trace', args)
   }
 
+  /**
+   * Log via "debug" level
+   * @param args - console log arguments
+   */
   debug(...args: any[]) {
     this.logIt('log', 'debug', args)
   }
 
+  /**
+   * Log via "info" level
+   * @param args - console log arguments
+   */
   info(...args: any[]) {
     this.logIt('log', 'info', args)
   }
 
   //alias for info
+
+  /**
+   * Log is an alias for  {@link Tinga.info | Tinga.info method}
+   * @param args - console log arguments
+   */
   log(...args: any[]) {
     this.info(...args)
   }
 
+  /**
+   * Log via "warn" level
+   * @param args - console log arguments
+   */
   warn(...args: any[]) {
     this.logIt('warn', 'warn', args)
   }
 
+  /**
+   * Log via "error" level
+   * @param args - console log arguments
+   */
   error(...args: any[]) {
     this.logIt('error', 'error', args)
   }
 
+  /**
+   * Log via "critical" level
+   * @param args - console log arguments
+   */
   critical(...args: any[]) {
     this.logIt('error', 'critical', args)
   }
 
+  /**
+   * Main logging implementation
+   * @param method - console log method to be used
+   * @param levelName - the name of the level to be used
+   * @param args - arguments to be logged
+   */
   protected logIt(method: string, levelName: LevelsByName, args: any[]) {
     const level: Level = { name: levelName, value: this.levels[levelName] }
     const { level: currentLevel, remote } = this.config
@@ -117,6 +157,12 @@ export default class Tinga<T = any> implements Tinga {
     }
   }
 
+  /**
+   * Log to the browser console
+   * @param method - console log method to be used
+   * @param level - the name of the level to be used
+   * @param args - arguments to be logged
+   */
   protected logLocal(method: string, level: Level, args: any[]) {
     const { label, color, ctx } = this.config
     const params = []
@@ -147,6 +193,11 @@ export default class Tinga<T = any> implements Tinga {
     console[method](...params, ...payload.data)
   }
 
+  /**
+   * Log to a remote endpoint
+   * @param level - the name of the level to be used
+   * @param args - arguments to be logged
+   */
   protected logRemote(level: Level, args: any[]) {
     //only send beacon if the default log level is bigger or equal to the beacon level
     const { processData, url, send: sendData } = this.config.remote!
@@ -164,14 +215,24 @@ export default class Tinga<T = any> implements Tinga {
     sendData(url, data)
   }
 
+  /**
+   * Get current log level
+   */
   getLevel() {
     return { ...this.config.level }
   }
 
+  /**
+   * Sets new logging level
+   * @param level - level to set
+   */
   setLevel(level: LevelsByName) {
     this.config.level = resolveLevel(level, this.levels)
   }
 
+  /**
+   * Gets remote logging level
+   */
   getRemoteLevel() {
     const { remote } = this.config
 
@@ -191,18 +252,35 @@ export default class Tinga<T = any> implements Tinga {
     remote.level = resolveLevel(level, this.levels)
   }
 
+  /**
+   * Sets new logging context
+   * @param ctx - new data for the context
+   */
   setContext(ctx: any) {
     this.config.ctx = ctx
   }
 
+  /**
+   * Gets the current context
+   */
   getContext(): T {
     return this.config.ctx
   }
 
+  /**
+   * Gets all available levels
+   */
   getLevels() {
     return { ...this.levels }
   }
 
+  /**
+   * Create a child logger instance based on the parent. Child configuration will be merged
+   * with the parent. The context will be completely overwritten. If a function is used for the context, the
+   * return value will be used as context.
+   * @typeParam K - child context
+   * @param config - child configuration
+   */
   child<K = void>(config: ChildConfig<K, T> = {} as ChildConfig<K, T>) {
     const cfg: Config = { ...config }
     if (typeof config.ctx === 'function') {

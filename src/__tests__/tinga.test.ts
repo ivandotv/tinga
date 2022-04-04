@@ -1,4 +1,4 @@
-import { Tinga } from '../tinga'
+import Tinga from '../tinga'
 import { Config, processData } from '../types'
 import * as utils from '../utils'
 

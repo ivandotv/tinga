@@ -22,19 +22,11 @@ const colors = {
   critical: generateStyles('#f05033', '#fff')
 }
 
-export interface Tinga {
-  trace(...args: any[]): void
-  debug(...args: any[]): void
-  log(...args: any[]): void
-  info(...args: any[]): void
-  warn(...args: any[]): void
-  error(...args: any[]): void
-}
-
-//Note: the class should be default export but TS doesn't allow default with declaration merging
-//https://github.com/microsoft/TypeScript/issues/14080
-
-export class Tinga<T = any> implements Tinga {
+/**
+ * Tinga - small logging module for the brower
+ * @typeParam T  - context (payload) to be used with the logger
+ */
+export default class Tinga<T = any> implements Tinga {
   protected config: InternaConfig
 
   protected levels = {

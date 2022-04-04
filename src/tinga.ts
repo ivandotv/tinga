@@ -170,9 +170,6 @@ export default class Tinga<T = any> implements Tinga {
       level,
       label
     })
-    if (typeof payload.ctx !== 'undefined') {
-      params.push(payload.ctx)
-    }
 
     if (color) {
       params.push(
@@ -181,8 +178,13 @@ export default class Tinga<T = any> implements Tinga {
         colors[level.name]
       )
     }
+
     if (label) {
       params.push(`[${label}] `)
+    }
+
+    if (typeof payload.ctx !== 'undefined') {
+      params.push(payload.ctx)
     }
 
     // @ts-expect-error - not all methods are availalbe directly on console

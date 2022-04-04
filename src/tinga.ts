@@ -186,7 +186,11 @@ export class Tinga<T = any> implements Tinga {
     return remote ? { ...remote?.level } : undefined
   }
 
-  setRemoveLevel(level: LevelsByName) {
+  /**
+   * Sets new remote logging level
+   * @param level - new logging level
+   */
+  setRemoteLevel(level: LevelsByName) {
     const { remote } = this.config
     if (!remote) {
       throw new Error('remote not set')

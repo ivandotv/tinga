@@ -444,7 +444,7 @@ describe('Tinga', () => {
         }
       })
 
-      logger.setRemoveLevel(newLevel)
+      logger.setRemoteLevel(newLevel)
 
       expect(logger.getRemoteLevel()).toEqual({
         name: newLevel,
@@ -457,7 +457,7 @@ describe('Tinga', () => {
         color: false
       })
 
-      expect(() => logger.setRemoveLevel('debug')).toThrow()
+      expect(() => logger.setRemoteLevel('debug')).toThrow()
     })
 
     test('When remote level is changed, it immediately goes in to effect', () => {
@@ -479,7 +479,7 @@ describe('Tinga', () => {
       logger.warn(payload)
       logger.error(payload)
 
-      logger.setRemoveLevel('debug')
+      logger.setRemoteLevel('debug')
       logger.debug(payload)
 
       expect(sendDataSpy).toHaveBeenCalledTimes(1)

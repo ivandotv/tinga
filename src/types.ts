@@ -1,6 +1,6 @@
 import type Tinga from './tinga'
 
-export type processRemoteData<T = any, K = any> = (
+export type ProcessRemoteData<T = any, K = any> = (
   info: {
     level: Level
     ctx?: T
@@ -9,7 +9,7 @@ export type processRemoteData<T = any, K = any> = (
   ...args: any[]
 ) => K
 
-export type processData<T = any, K = any> = (
+export type ProcessData<T = any, K = any> = (
   info: {
     level: Level
     ctx?: T
@@ -23,11 +23,11 @@ export type Config<T = any> = {
   level?: LevelsByName
   color?: boolean
   label?: string
-  processData?: processData<T>
+  processData?: ProcessData<T>
   remote?: {
     url: string
     level: LevelsByValue | LevelsByName
-    processData?: processRemoteData<T>
+    processData?: ProcessRemoteData<T>
     send?: sendData
   }
 }
@@ -40,11 +40,11 @@ export type InternaConfig<T = any> = {
   level: Level
   color: boolean
   label?: string
-  processData: processData
+  processData: ProcessData
   remote?: {
     url: string
     level: Level
-    processData: processRemoteData
+    processData: ProcessRemoteData
     send: sendData
   }
 }

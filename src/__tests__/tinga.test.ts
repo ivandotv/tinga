@@ -1,5 +1,5 @@
 import Tinga from '../tinga'
-import { Config, processData } from '../types'
+import { Config, type ProcessData } from '../types'
 import * as utils from '../utils'
 
 function spyOnConsole() {
@@ -167,7 +167,7 @@ describe('Tinga', () => {
       const modifiedCtx = { name: 'Marko' }
       const restOfTheArguments = [1, 2, 3]
       const payload = ['hello', 'world']
-      const processData: processData = (_info, _args) => {
+      const processData: ProcessData = (_info, _args) => {
         return {
           ctx: modifiedCtx,
           data: [...restOfTheArguments]
@@ -193,7 +193,7 @@ describe('Tinga', () => {
       spyOnConsole()
       const ctx = { name: 'Ivan' }
       const payload = ['hello', 'world']
-      const processData: processData = (info, args) => {
+      const processData: ProcessData = (info, args) => {
         return {
           ctx: info.ctx,
           data: args

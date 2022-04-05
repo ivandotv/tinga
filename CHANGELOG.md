@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.1
+
+### Patch Changes
+
+- 7dd115f: Color is no longer optional
+
 ## 4.0.0
 
 ### Major Changes

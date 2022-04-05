@@ -16,12 +16,11 @@ export type ProcessData<T = any, K = any> = (
     level: Level
     label?: string
   }
-) => { ctx: K; data: any[] }
+) => { ctx?: K; data: any[] }
 
 export type Config<T = any> = {
   ctx?: T
   level?: LevelsByName
-  color?: boolean
   label?: string
   processData?: ProcessData<T>
   remote?: {
@@ -38,7 +37,6 @@ export type ChildConfig<T = void, TParent = any> = Omit<Config<T>, 'ctx'> & {
 export type InternaConfig<T = any> = {
   ctx: T
   level: Level
-  color: boolean
   label?: string
   processData: ProcessData
   remote?: {

@@ -55,7 +55,7 @@ export default class Tinga<T = any> implements Tinga {
     )
     let remote: InternaConfig['remote']
 
-    const { remote: customRemote, color, label, ctx } = config
+    const { remote: customRemote, label, ctx } = config
 
     if (customRemote?.url) {
       remote = {
@@ -72,7 +72,6 @@ export default class Tinga<T = any> implements Tinga {
 
     return {
       ctx,
-      color: color ?? true,
       label,
       level,
       remote,
@@ -164,20 +163,16 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - arguments to be logged
    */
   protected logLocal(method: string, level: Level, args: any[]) {
-    const { label, color, ctx, processData } = this.config
-    const params = []
+    const { label, ctx, processData } = this.config
+    const params = [
+      `%c${level.name}`,
+      // @ts-expect-error TODO types
+      colors[level.name]
+    ]
     const payload = processData(ctx, args, {
       level,
       label
     })
-
-    if (color) {
-      params.push(
-        `%c${level.name}`,
-        // @ts-expect-error TODO types
-        colors[level.name]
-      )
-    }
 
     if (label) {
       params.push(`[${label}] `)

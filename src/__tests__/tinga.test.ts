@@ -31,7 +31,7 @@ describe('Tinga', () => {
   })
 
   test('All levels above the current level are called', () => {
-    const logger = new Tinga({ color: false })
+    const logger = new Tinga()
     const payload = 'hello'
 
     logger.trace(payload)
@@ -43,23 +43,57 @@ describe('Tinga', () => {
     logger.critical(payload)
 
     expect(console.trace).toHaveBeenCalledTimes(1)
-    expect(console.trace).toHaveBeenCalledWith(payload)
+    expect(console.trace).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
 
     expect(console.log).toHaveBeenCalledTimes(3)
-    expect(console.log).toHaveBeenNthCalledWith(1, payload)
-    expect(console.log).toHaveBeenNthCalledWith(2, payload)
-    expect(console.log).toHaveBeenNthCalledWith(3, payload)
+    expect(console.log).toHaveBeenNthCalledWith(
+      1,
+      expect.any(String),
+      expect.any(String),
+
+      payload
+    )
+    expect(console.log).toHaveBeenNthCalledWith(
+      2,
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
+    expect(console.log).toHaveBeenNthCalledWith(
+      3,
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
 
     expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenCalledWith(payload)
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
 
     expect(console.error).toHaveBeenCalledTimes(2)
-    expect(console.error).toHaveBeenNthCalledWith(1, payload)
-    expect(console.error).toHaveBeenNthCalledWith(2, payload)
+    expect(console.error).toHaveBeenNthCalledWith(
+      1,
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
+    expect(console.error).toHaveBeenNthCalledWith(
+      2,
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
   })
 
   test('All levels below the current level are not called', () => {
-    const logger = new Tinga({ level: 'warn', color: false })
+    const logger = new Tinga({ level: 'warn' })
     const payload = 'hello'
 
     logger.trace(payload)
@@ -73,19 +107,31 @@ describe('Tinga', () => {
     expect(console.log).not.toHaveBeenCalled()
 
     expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenCalledWith(payload)
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
 
     expect(console.error).toHaveBeenCalledTimes(1)
-    expect(console.error).toHaveBeenCalledWith(payload)
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      payload
+    )
   })
 
   test('All arguments are passed to underlying console call', () => {
-    const logger = new Tinga({ color: false })
+    const logger = new Tinga()
     const payload = ['hello', 'world']
 
     logger.log(...payload)
 
-    expect(console.log).toHaveBeenCalledWith(...payload)
+    expect(console.log).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.any(String),
+      ...payload
+    )
   })
 
   test('Silent level removes all logging', () => {
@@ -131,35 +177,53 @@ describe('Tinga', () => {
       const ctx = { name: 'Ivan' }
       const newCtx = { name: 'Marko' }
 
-      const logger = new Tinga({ ctx, color: false })
+      const logger = new Tinga({ ctx })
       logger.log()
       logger.setContext(newCtx)
       logger.warn()
 
-      expect(console.log).toHaveBeenCalledWith(ctx)
-      expect(console.warn).toHaveBeenCalledWith(newCtx)
+      expect(console.log).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        ctx
+      )
+      expect(console.warn).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        newCtx
+      )
       expect(logger.getContext()).toBe(newCtx)
     })
 
     test('Get current context', () => {
       const ctx = { name: 'Ivan' }
 
-      const logger = new Tinga({ ctx, color: false })
+      const logger = new Tinga({ ctx })
 
       expect(logger.getContext()).toBe(ctx)
     })
 
     test('Context is passed to the logging methods', () => {
       const ctx = { name: 'Ivan' }
-      const logger = new Tinga({ ctx, color: false })
+      const logger = new Tinga({ ctx })
 
       const payload = ['hello', 'world']
 
       logger.log(...payload)
       logger.warn(...payload)
 
-      expect(console.log).toHaveBeenCalledWith(ctx, ...payload)
-      expect(console.warn).toHaveBeenCalledWith(ctx, ...payload)
+      expect(console.log).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        ctx,
+        ...payload
+      )
+      expect(console.warn).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        ctx,
+        ...payload
+      )
     })
 
     test('Custom processing function can manipulate logging payload', () => {
@@ -174,16 +238,21 @@ describe('Tinga', () => {
         }
       }
 
-      const logger = new Tinga({ ctx, processData, color: false })
+      const logger = new Tinga({ ctx, processData })
 
       logger.log(...payload)
       logger.warn(...payload)
 
       expect(console.log).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
         modifiedCtx,
         ...restOfTheArguments
       )
+
       expect(console.warn).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
         modifiedCtx,
         ...restOfTheArguments
       )
@@ -227,7 +296,6 @@ describe('Tinga', () => {
       const label = 'shopping'
       const sendDataSpy = jest.spyOn(utils, 'sendData')
       const logger = new Tinga({
-        color: false,
         ctx,
         label,
         remote: {
@@ -260,7 +328,6 @@ describe('Tinga', () => {
       const sendDataSpy = jest.spyOn(utils, 'sendData')
 
       const logger = new Tinga({
-        color: false,
         ctx,
         label,
         remote: {
@@ -297,7 +364,6 @@ describe('Tinga', () => {
       const label = 'shopping'
       const sendDataSpy = jest.fn()
       const logger = new Tinga({
-        color: false,
         ctx,
         label,
         remote: {
@@ -324,8 +390,6 @@ describe('Tinga', () => {
       const url = 'some_url'
       const level = 'info'
       const logger = new Tinga({
-        color: false,
-
         remote: {
           url,
           level,
@@ -373,7 +437,6 @@ describe('Tinga', () => {
       const payload = 'hello'
       const url = 'some_url'
       const logger = new Tinga({
-        color: false,
         level: 'silent',
         remote: {
           url,
@@ -403,7 +466,6 @@ describe('Tinga', () => {
       const payload = 'hello'
       const url = 'some_url'
       const logger = new Tinga({
-        color: false,
         remote: {
           url,
           level: 'silent',
@@ -438,7 +500,6 @@ describe('Tinga', () => {
       const url = 'some_url'
       const newLevel = 'warn'
       const logger = new Tinga({
-        color: false,
         remote: {
           url,
           level: 'silent',
@@ -455,9 +516,7 @@ describe('Tinga', () => {
     })
 
     test('If remote is not set, throw when trying to set remote level', () => {
-      const logger = new Tinga({
-        color: false
-      })
+      const logger = new Tinga()
 
       expect(() => logger.setRemoteLevel('debug')).toThrow()
     })
@@ -467,7 +526,6 @@ describe('Tinga', () => {
       const payload = 'hello'
       const url = 'some_url'
       const logger = new Tinga({
-        color: false,
         remote: {
           url,
           level: 'silent',

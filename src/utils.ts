@@ -48,11 +48,11 @@ export function generateStyles(bg: string, color: string) {
   return `background:${bg};color:${color};padding:2px;border-radius:2px;`
 }
 
-export const processRemoteData: ProcessRemoteData = function processRemoteData(
+export const processRemoteData: ProcessRemoteData = (
   ctx,
   data,
   { level, label }
-) {
+) => {
   return {
     ctx,
     data,
@@ -62,7 +62,7 @@ export const processRemoteData: ProcessRemoteData = function processRemoteData(
   }
 }
 
-export const processData: ProcessData = function processData(ctx, data: any[]) {
+export const processData: ProcessData = (ctx, data: any[]) => {
   return {
     ctx,
     data

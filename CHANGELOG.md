@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.4
+
+### Patch Changes
+
+- e95be6d: types: make context optional in ChildConfig
+
 ## 4.0.3
 
 ### Patch Changes

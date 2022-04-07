@@ -32,7 +32,7 @@ export type Config<T = any> = {
 }
 
 export type ChildConfig<T = void, TParent = any> = Omit<Config<T>, 'ctx'> & {
-  ctx: ((ctx: TParent) => T) | T
+  ctx?: ((ctx: TParent) => T) | T
 }
 export type InternaConfig<T = any> = {
   ctx: T

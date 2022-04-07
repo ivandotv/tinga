@@ -29,7 +29,7 @@ const colors = {
 export default class Tinga<T = any> implements Tinga {
   protected config: InternaConfig
 
-  protected levels = {
+  protected levels = Object.freeze({
     trace: 10,
     debug: 20,
     info: 30,
@@ -37,7 +37,7 @@ export default class Tinga<T = any> implements Tinga {
     error: 50,
     critical: 60,
     silent: 100
-  } as const
+  } as const)
 
   constructor(config: Config<T> = {}) {
     this.config = this.createConfig(config)
@@ -208,7 +208,7 @@ export default class Tinga<T = any> implements Tinga {
    * Get current log level
    */
   getLevel() {
-    return { ...this.config.level }
+    return this.config.level
   }
 
   /**
@@ -225,7 +225,7 @@ export default class Tinga<T = any> implements Tinga {
   getRemoteLevel() {
     const { remote } = this.config
 
-    return remote ? { ...remote?.level } : undefined
+    return remote ? remote?.level : undefined
   }
 
   /**

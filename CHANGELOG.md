@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.3
+
+### Patch Changes
+
+- 4f75dae: freeze levels object
+
 ## 4.0.2
 
 ### Patch Changes

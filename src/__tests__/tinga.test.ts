@@ -43,50 +43,24 @@ describe('Tinga', () => {
     logger.critical(payload)
 
     expect(console.trace).toHaveBeenCalledTimes(1)
-    expect(console.trace).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      payload
-    )
+    expect(console.trace).toHaveBeenCalledWith(expect.any(String), payload)
 
     expect(console.log).toHaveBeenCalledTimes(3)
-    expect(console.log).toHaveBeenNthCalledWith(
-      1,
-      expect.any(String),
-      expect.any(String),
-
-      payload
-    )
-    expect(console.log).toHaveBeenNthCalledWith(
-      2,
-      expect.any(String),
-      expect.any(String),
-      payload
-    )
-    expect(console.log).toHaveBeenNthCalledWith(
-      3,
-      expect.any(String),
-      expect.any(String),
-      payload
-    )
+    expect(console.log).toHaveBeenNthCalledWith(1, expect.any(String), payload)
+    expect(console.log).toHaveBeenNthCalledWith(2, expect.any(String), payload)
+    expect(console.log).toHaveBeenNthCalledWith(3, expect.any(String), payload)
 
     expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      payload
-    )
+    expect(console.warn).toHaveBeenCalledWith(expect.any(String), payload)
 
     expect(console.error).toHaveBeenCalledTimes(2)
     expect(console.error).toHaveBeenNthCalledWith(
       1,
       expect.any(String),
-      expect.any(String),
       payload
     )
     expect(console.error).toHaveBeenNthCalledWith(
       2,
-      expect.any(String),
       expect.any(String),
       payload
     )
@@ -107,18 +81,10 @@ describe('Tinga', () => {
     expect(console.log).not.toHaveBeenCalled()
 
     expect(console.warn).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      payload
-    )
+    expect(console.warn).toHaveBeenCalledWith(expect.any(String), payload)
 
     expect(console.error).toHaveBeenCalledTimes(1)
-    expect(console.warn).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      payload
-    )
+    expect(console.warn).toHaveBeenCalledWith(expect.any(String), payload)
   })
 
   test('All arguments are passed to underlying console call', () => {
@@ -127,11 +93,7 @@ describe('Tinga', () => {
 
     logger.log(...payload)
 
-    expect(console.log).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      ...payload
-    )
+    expect(console.log).toHaveBeenCalledWith(expect.any(String), ...payload)
   })
 
   test('Silent level removes all logging', () => {
@@ -182,16 +144,8 @@ describe('Tinga', () => {
       logger.setContext(newCtx)
       logger.warn()
 
-      expect(console.log).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.any(String),
-        ctx
-      )
-      expect(console.warn).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.any(String),
-        newCtx
-      )
+      expect(console.log).toHaveBeenCalledWith(expect.any(String), ctx)
+      expect(console.warn).toHaveBeenCalledWith(expect.any(String), newCtx)
       expect(logger.getContext()).toBe(newCtx)
     })
 
@@ -214,12 +168,10 @@ describe('Tinga', () => {
 
       expect(console.log).toHaveBeenCalledWith(
         expect.any(String),
-        expect.any(String),
         ctx,
         ...payload
       )
       expect(console.warn).toHaveBeenCalledWith(
-        expect.any(String),
         expect.any(String),
         ctx,
         ...payload
@@ -245,13 +197,11 @@ describe('Tinga', () => {
 
       expect(console.log).toHaveBeenCalledWith(
         expect.any(String),
-        expect.any(String),
         modifiedCtx,
         ...restOfTheArguments
       )
 
       expect(console.warn).toHaveBeenCalledWith(
-        expect.any(String),
         expect.any(String),
         modifiedCtx,
         ...restOfTheArguments

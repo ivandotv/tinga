@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.5
+
+### Patch Changes
+
+- 32d300f: Remove color output when running in nodejs
+
 ## 4.0.4
 
 ### Patch Changes

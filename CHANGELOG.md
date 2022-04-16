@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.7
+
+### Patch Changes
+
+- 2a7e778: Check for window object to detect if running on the server. Apparently next checking for `processes` gives false positive in Next.js framework.
+
 ## 4.0.6
 
 ### Patch Changes

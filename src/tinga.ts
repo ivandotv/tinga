@@ -167,16 +167,16 @@ export default class Tinga<T = any> implements Tinga {
    */
   protected logLocal(method: string, level: Level, args: any[]) {
     const { label, ctx, processData } = this.config
-    const params: any[] = [level.name]
+    const params: any[] = []
 
     if (!this.isServer) {
-      params.unshift('%c')
-      params.push(
-        // @ts-expect-error TODO types
-        colors[level.name]
-      )
+      params.push(`%c${level.name}`)
     }
 
+    params.push(
+      // @ts-expect-error TODO types
+      colors[level.name]
+    )
     const payload = processData(ctx, args, {
       level,
       label

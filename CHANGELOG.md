@@ -1,5 +1,12 @@
 # tinga
 
+## 4.0.6
+
+### Patch Changes
+
+- fc7853c: fix setting up colors
+- b4b156e: update docs
+
 ## 4.0.5
 
 ### Patch Changes

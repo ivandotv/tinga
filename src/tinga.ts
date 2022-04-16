@@ -43,7 +43,7 @@ export default class Tinga<T = any> implements Tinga {
 
   constructor(config: Config<T> = {}) {
     this.config = this.createConfig(config)
-    this.isServer = typeof process !== 'undefined'
+    this.isServer = typeof window === 'undefined'
   }
 
   /**

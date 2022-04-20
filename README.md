@@ -1,8 +1,10 @@
+# Tinga
+
+Small browser logging module with the ability to send logs to the remote endpoint
+
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ivandotv/tinga/Test)
 ![Codecov](https://img.shields.io/codecov/c/gh/ivandotv/tinga)
 [![GitHub license](https://img.shields.io/github/license/ivandotv/tinga)](https://github.com/ivandotv/tinga/blob/main/LICENSE)
-
-# Tinga - browser logging module
 
 Small (~1.1KB) logging module primarily for the browser. It has a few logging levels that can be enabled and disabled at runtime. It also can automatically send the logs to a remote server (by default it uses `navigator.sendBeacon`).
 
@@ -133,7 +135,7 @@ const config: Config = {
 
 - `level`: level set explicitly for remote logging, you can change its runtime by using
   `instance.getRemoteLevel()` and `instance.setRemoteLevel()`
-- `url`: url for the remote endpoint
+- `url`: URL for the remote endpoint
 - `send`: custom function to send the data
 - `processData`: You can use this function to determine what exactly and in what format you want to send. whatever is returned from this function will be passed to the `send` function as the `data` arguments.
 

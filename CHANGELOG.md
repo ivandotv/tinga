@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.8
+
+### Patch Changes
+
+- f5ae0a6: update docs
+
 ## 4.0.7
 
 ### Patch Changes

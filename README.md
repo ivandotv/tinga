@@ -6,7 +6,7 @@ Small browser logging module with the ability to send logs to the remote endpoin
 ![Codecov](https://img.shields.io/codecov/c/gh/ivandotv/tinga)
 [![GitHub license](https://img.shields.io/github/license/ivandotv/tinga)](https://github.com/ivandotv/tinga/blob/main/LICENSE)
 
-Small (~1.1KB) logging module primarily for the browser. It has a few logging levels that can be enabled and disabled at runtime. It also can automatically send the logs to a remote server (by default it uses `navigator.sendBeacon`).
+Small ([~1KB](https://bundlephobia.com/package/tinga)) logging module primarily for the browser. It has a few logging levels that can be enabled and disabled at runtime. It also can automatically send the logs to a remote server (by default it uses `navigator.sendBeacon`).
 
 ![screen](./assets/img-1.png)
 

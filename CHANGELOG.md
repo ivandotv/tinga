@@ -1,5 +1,12 @@
 # tinga
 
+## 4.0.9
+
+### Patch Changes
+
+- 762bc6b: docs: add link to bundlephobia
+- d5185d2: Update packages and create `.mjs` file build.
+
 ## 4.0.8
 
 ### Patch Changes

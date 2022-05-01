@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.10
+
+### Patch Changes
+
+- fd9f5ac: switch package to type module, and update build process accordingly
+
 ## 4.0.9
 
 ### Patch Changes

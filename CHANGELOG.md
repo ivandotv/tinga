@@ -1,5 +1,11 @@
 # tinga
 
+## 4.0.11
+
+### Patch Changes
+
+- 9c4486b: Fix package repository links
+
 ## 4.0.10
 
 ### Patch Changes

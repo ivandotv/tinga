@@ -47,12 +47,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/tinga.git"
+    "url": "git+https://github.com/ivandotv/tinga.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/tinga/issues"
+    "url": "https://github.com/ivandotv/tinga/issues"
   },
-  "homepage": "https://github.com/your-username/tinga#readme",
+  "homepage": "https://github.com/ivandotv/tinga#readme",
   "devDependencies": {
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",

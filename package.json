@@ -45,7 +45,14 @@
     "prepare": "husky install",
     "release": "pnpm run prepublishOnly && pnpm changeset publish"
   },
-  "repository": "github:ivandotv/tinga",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivandotv/tinga.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ivandotv/tinga/issues"
+  },
+  "homepage": "https://github.com/ivandotv/tinga#readme",
   "devDependencies": {
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",

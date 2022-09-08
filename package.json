@@ -17,7 +17,6 @@
   "type": "module",
   "main": "./dist/prod/index.cjs",
   "module": "./dist/prod/index.modern.js",
-  "umd:main": "./dist/prod/index.umd.js",
   "exports": {
     "require": "./dist/prod/index.cjs",
     "development": "./dist/dev/index.modern.js",

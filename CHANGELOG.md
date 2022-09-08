@@ -1,5 +1,11 @@
 # tinga
 
+## 5.0.0
+
+### Major Changes
+
+- f4e53b4: remove umd build
+
 ## 4.0.11
 
 ### Patch Changes

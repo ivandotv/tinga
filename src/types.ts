@@ -19,6 +19,7 @@ export type ProcessData<T = any, K = any> = (
 ) => { ctx?: K; data: any[] }
 
 export type Config<T = any> = {
+  useColor?: boolean
   ctx?: T
   level?: LevelsByName
   label?: string
@@ -38,6 +39,7 @@ export type InternaConfig<T = any> = {
   ctx: T
   level: Level
   label?: string
+  useColor: boolean
   processData: ProcessData
   remote?: {
     url: string

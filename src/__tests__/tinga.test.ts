@@ -30,6 +30,14 @@ describe('Tinga', () => {
     expect(result.value).toBe(levels['trace'])
   })
 
+  test('Do not use color', () => {
+    const logger = new Tinga({ useColor: false })
+    const payload = 'ivan'
+
+    logger.log(payload)
+    expect(console.log).toHaveBeenCalledWith(payload)
+  })
+
   test('All levels above the current level are called', () => {
     const logger = new Tinga()
     const payload = 'hello'

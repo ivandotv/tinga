@@ -29,8 +29,6 @@ const colors = {
 export default class Tinga<T = any> implements Tinga {
   protected config: InternaConfig
 
-  protected isServer: boolean
-
   protected levels = Object.freeze({
     trace: 10,
     debug: 20,
@@ -43,7 +41,6 @@ export default class Tinga<T = any> implements Tinga {
 
   constructor(config: Config<T> = {}) {
     this.config = this.createConfig(config)
-    this.isServer = typeof window === 'undefined'
   }
 
   /**
@@ -73,7 +70,10 @@ export default class Tinga<T = any> implements Tinga {
       }
     }
 
+    const useColor = config.useColor ?? typeof window !== 'undefined'
+
     return {
+      useColor,
       ctx,
       label,
       level,
@@ -166,17 +166,17 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - arguments to be logged
    */
   protected logLocal(method: string, level: Level, args: any[]) {
-    const { label, ctx, processData } = this.config
+    const { label, ctx, processData, useColor } = this.config
     const params: any[] = []
 
-    if (!this.isServer) {
+    if (useColor) {
       params.push(`%c${level.name}`)
+      params.push(
+        // @ts-expect-error TODO types
+        colors[level.name]
+      )
     }
 
-    params.push(
-      // @ts-expect-error TODO types
-      colors[level.name]
-    )
     const payload = processData(ctx, args, {
       level,
       label

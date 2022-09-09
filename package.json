@@ -1,6 +1,6 @@
 {
   "name": "tinga",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "Small logging module made primarily for the browser.Supports multiple log levels, and automatic sending of logs to the remote server.",
   "keywords": [
     "log",

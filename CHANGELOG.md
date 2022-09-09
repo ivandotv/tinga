@@ -1,5 +1,12 @@
 # tinga
 
+## 5.1.0
+
+### Minor Changes
+
+- 4a39861: Optionally remove color.
+  Property `useColor` is available on the config object, if not provided, color will be used if `window` object is available.
+
 ## 5.0.0
 
 ### Major Changes

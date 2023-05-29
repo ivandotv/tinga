@@ -79,7 +79,7 @@
     "microbundle": "^0.15.0",
     "prettier": "^2.6.2",
     "shx": "^0.3.4",
-    "typedoc": "^0.23.0",
+    "typedoc": "^0.24.0",
     "typedoc-plugin-markdown": "^3.12.1",
     "typescript": "^4.6.4"
   }

@@ -1,3 +1,3 @@
-export * from "./types"
-import Tinga from "./tinga"
+export * from "./types.js"
+import Tinga from "./tinga.js"
 export default Tinga

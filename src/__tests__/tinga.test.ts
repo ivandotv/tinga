@@ -1,23 +1,24 @@
 import Tinga from '../tinga'
 import { Config, type ProcessData } from '../types'
 import * as utils from '../utils'
+import { vi, describe, expect, test, beforeEach, afterEach } from 'vitest'
 
 function spyOnConsole() {
-  jest.spyOn(console, 'trace').mockReturnValue()
-  jest.spyOn(console, 'debug').mockReturnValue()
-  jest.spyOn(console, 'log').mockReturnValue()
-  jest.spyOn(console, 'info').mockReturnValue()
-  jest.spyOn(console, 'error').mockReturnValue()
-  jest.spyOn(console, 'warn').mockReturnValue()
+  vi.spyOn(console, 'trace').mockReturnValue()
+  vi.spyOn(console, 'debug').mockReturnValue()
+  vi.spyOn(console, 'log').mockReturnValue()
+  vi.spyOn(console, 'info').mockReturnValue()
+  vi.spyOn(console, 'error').mockReturnValue()
+  vi.spyOn(console, 'warn').mockReturnValue()
 }
 
 describe('Tinga', () => {
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   beforeEach(() => {
     spyOnConsole()
-    navigator.sendBeacon = jest.fn().mockReturnValue(true)
+    navigator.sendBeacon = vi.fn().mockReturnValue(true)
   })
 
   test('Default log level is "trace"', () => {
@@ -276,7 +277,7 @@ describe('Tinga', () => {
           data
         }
       }
-      const processDataSpy = jest.fn(processData)
+      const processDataSpy = vi.fn(processData)
       const label = 'test'
       const logger = new Tinga({ label, ctx, processData: processDataSpy })
 
@@ -302,7 +303,7 @@ describe('Tinga', () => {
       const payload = 'hello world'
       const ctx = { name: 'ivan' }
       const label = 'shopping'
-      const sendDataSpy = jest.spyOn(utils, 'sendData')
+      const sendDataSpy = vi.spyOn(utils, 'sendData')
       const logger = new Tinga({
         ctx,
         label,
@@ -333,7 +334,7 @@ describe('Tinga', () => {
       const level = 123
       const name = 'critical'
 
-      const sendDataSpy = jest.spyOn(utils, 'sendData')
+      const sendDataSpy = vi.spyOn(utils, 'sendData')
 
       const logger = new Tinga({
         ctx,
@@ -370,7 +371,7 @@ describe('Tinga', () => {
       const payload = 'hello world'
       const ctx = { name: 'ivan' }
       const label = 'shopping'
-      const sendDataSpy = jest.fn()
+      const sendDataSpy = vi.fn()
       const logger = new Tinga({
         ctx,
         label,
@@ -393,7 +394,7 @@ describe('Tinga', () => {
     })
 
     test('All levels above the current level are called', () => {
-      const sendDataSpy = jest.fn()
+      const sendDataSpy = vi.fn()
       const payload = 'hello'
       const url = 'some_url'
       const level = 'info'
@@ -441,7 +442,7 @@ describe('Tinga', () => {
     })
 
     test('When default level is silent, remote send still works', () => {
-      const sendDataSpy = jest.fn()
+      const sendDataSpy = vi.fn()
       const payload = 'hello'
       const url = 'some_url'
       const logger = new Tinga({
@@ -470,7 +471,7 @@ describe('Tinga', () => {
     })
 
     test('Remote silent level disables sending', () => {
-      const sendDataSpy = jest.fn()
+      const sendDataSpy = vi.fn()
       const payload = 'hello'
       const url = 'some_url'
       const logger = new Tinga({
@@ -504,7 +505,7 @@ describe('Tinga', () => {
     })
 
     test('Set and get remote level', () => {
-      const sendDataSpy = jest.fn()
+      const sendDataSpy = vi.fn()
       const url = 'some_url'
       const newLevel = 'warn'
       const logger = new Tinga({
@@ -530,7 +531,7 @@ describe('Tinga', () => {
     })
 
     test('When remote level is changed, it immediately goes in to effect', () => {
-      const sendDataSpy = jest.fn()
+      const sendDataSpy = vi.fn()
       const payload = 'hello'
       const url = 'some_url'
       const logger = new Tinga({

@@ -8,9 +8,7 @@ import {
 import {
   generateStyles,
   processData,
-  processRemoteData,
-  resolveLevel,
-  sendData,
+  resolveLevel
 } from "./utils"
 
 const colors = {

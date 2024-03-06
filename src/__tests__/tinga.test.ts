@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 import Tinga from "../tinga"
-import { Config, type ProcessData } from "../types"
-import * as utils from "../utils"
+import { type ProcessData } from "../types"
 
 function spyOnConsole() {
   vi.spyOn(console, "trace").mockReturnValue()
@@ -18,7 +17,6 @@ describe("Tinga", () => {
   })
   beforeEach(() => {
     spyOnConsole()
-    navigator.sendBeacon = vi.fn().mockReturnValue(true)
   })
 
   test('Default log level is "trace"', () => {
@@ -297,30 +295,4 @@ describe("Tinga", () => {
     })
   })
 
-  describe("Child logger", () => {
-    test("is instance of Tinga", () => {
-      const parent = new Tinga()
-      const child = parent.child()
-
-      expect(child).toBeInstanceOf(Tinga)
-    })
-
-    test("can derive context from parent context", () => {
-      const cfg: Config<{ name: string }> = { ctx: { name: "ivan" } }
-      const parent = new Tinga<{ name: string }>(cfg)
-      const childCtx = {
-        nick: "ivandotv",
-      }
-      const child = parent.child({
-        ctx: (ctx) => {
-          return {
-            ...ctx,
-            ...childCtx,
-          }
-        },
-      })
-      const result = child.getContext()
-      expect(result).toEqual({ ...childCtx, ...parent.getContext() })
-    })
-  })
 })

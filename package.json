@@ -1,15 +1,14 @@
 {
   "name": "tinga",
   "version": "5.1.0",
-  "description": "Small logging module made primarily for the browser.Supports multiple log levels, and automatic sending of logs to the remote server.",
+  "description": "Small logging module made primarily for the browser.Supports multiple log levels.",
   "keywords": [
     "log",
     "logger",
     "logging",
     "browser logger",
     "browser log",
-    "pino",
-    "sendbeacon"
+    "pino"
   ],
   "private": false,
   "author": "Ivan Vlatkovic",
@@ -39,7 +38,7 @@
     "build": "shx rm -rf ./dist && NODE_ENV=production microbundle --tsconfig ./tsconfig.json  --format modern,cjs  --output dist/index.js && shx cp  ./dist/index.d.ts ./dist/index.d.cts",
     "gen:docs": "rm -rf ./docs/api && typedoc --theme markdown --readme none --excludePrivate  --excludeInternal --exclude ./src/globals.d.ts --exclude ./src/__tests__ --out docs/api ./src",
     "prepublishOnly": "pnpm build",
-    "prepare": "husky install",
+    "prepare": "lefthook install",
     "release": "pnpm run prepublishOnly && pnpm changeset publish"
   },
   "repository": {
@@ -54,19 +53,9 @@
     "@biomejs/biome": "1.5.3",
     "@changesets/cli": "^2.22.0",
     "@types/node": "^20.11.24",
-    "@typescript-eslint/eslint-plugin": "^5.21.0",
-    "@typescript-eslint/parser": "^5.21.0",
-    "eslint": "^8.14.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-jest": "^26.1.5",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-tsdoc": "^0.2.16",
-    "husky": "^7.0.4",
     "jsdom": "^24.0.0",
-    "lint-staged": "^12.4.1",
+    "lefthook": "^1.6.5",
     "microbundle": "^0.15.0",
-    "prettier": "^2.6.2",
     "shx": "^0.3.4",
     "typedoc": "^0.25.0",
     "typedoc-plugin-markdown": "^3.12.1",

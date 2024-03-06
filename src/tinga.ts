@@ -3,23 +3,23 @@ import {
   Config,
   InternaConfig,
   Level,
-  LevelsByName
-} from './types'
+  LevelsByName,
+} from "./types"
 import {
   generateStyles,
   processData,
   processRemoteData,
   resolveLevel,
-  sendData
-} from './utils'
+  sendData,
+} from "./utils"
 
 const colors = {
-  trace: generateStyles('#555', '#fff'),
-  debug: generateStyles('#7627f2', '#fff'),
-  info: generateStyles('#1f5bcc', '#fff'),
-  warn: generateStyles('#f5a623', '#000'),
-  error: generateStyles('#f05033', '#fff'),
-  critical: generateStyles('#f05033', '#fff')
+  trace: generateStyles("#555", "#fff"),
+  debug: generateStyles("#7627f2", "#fff"),
+  info: generateStyles("#1f5bcc", "#fff"),
+  warn: generateStyles("#f5a623", "#000"),
+  error: generateStyles("#f05033", "#fff"),
+  critical: generateStyles("#f05033", "#fff"),
 }
 
 /**
@@ -36,7 +36,7 @@ export default class Tinga<T = any> implements Tinga {
     warn: 40,
     error: 50,
     critical: 60,
-    silent: 100
+    silent: 100,
   } as const)
 
   constructor(config: Config<T> = {}) {
@@ -50,35 +50,20 @@ export default class Tinga<T = any> implements Tinga {
    */
   protected createConfig(config: Config) {
     const level = resolveLevel(
-      config.level || this.levels['trace'],
-      this.levels
+      config.level || this.levels.trace,
+      this.levels,
     )
-    let remote: InternaConfig['remote']
 
-    const { remote: customRemote, label, ctx } = config
+    const { label, ctx } = config
 
-    if (customRemote?.url) {
-      remote = {
-        url: customRemote.url,
-        processData: customRemote.processData || processRemoteData,
-        level: customRemote.level
-          ? resolveLevel(customRemote.level, this.levels)
-          : (() => {
-              throw new Error('Remote level not set')
-            })(),
-        send: customRemote.send || sendData
-      }
-    }
-
-    const useColor = config.useColor ?? typeof window !== 'undefined'
+    const useColor = config.useColor ?? typeof window !== "undefined"
 
     return {
       useColor,
       ctx,
       label,
       level,
-      remote,
-      processData: config.processData || processData
+      processData: config.processData || processData,
     }
   }
 
@@ -87,7 +72,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   trace(...args: any[]) {
-    this.logIt('trace', 'trace', args)
+    this.logIt("trace", "trace", args)
   }
 
   /**
@@ -95,7 +80,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   debug(...args: any[]) {
-    this.logIt('log', 'debug', args)
+    this.logIt("log", "debug", args)
   }
 
   /**
@@ -103,7 +88,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   info(...args: any[]) {
-    this.logIt('log', 'info', args)
+    this.logIt("log", "info", args)
   }
 
   //alias for info
@@ -121,7 +106,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   warn(...args: any[]) {
-    this.logIt('warn', 'warn', args)
+    this.logIt("warn", "warn", args)
   }
 
   /**
@@ -129,7 +114,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   error(...args: any[]) {
-    this.logIt('error', 'error', args)
+    this.logIt("error", "error", args)
   }
 
   /**
@@ -137,7 +122,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   critical(...args: any[]) {
-    this.logIt('error', 'critical', args)
+    this.logIt("error", "critical", args)
   }
 
   /**
@@ -148,15 +133,12 @@ export default class Tinga<T = any> implements Tinga {
    */
   protected logIt(method: string, levelName: LevelsByName, args: any[]) {
     const level: Level = { name: levelName, value: this.levels[levelName] }
-    const { level: currentLevel, remote } = this.config
+    const { level: currentLevel } = this.config
 
     if (level.value >= currentLevel.value) {
       this.logLocal(method, level, args)
     }
 
-    if (remote && level.value >= remote.level.value) {
-      this.logRemote(level, args)
-    }
   }
 
   /**
@@ -173,43 +155,25 @@ export default class Tinga<T = any> implements Tinga {
       params.push(`%c${level.name}`)
       params.push(
         // @ts-expect-error TODO types
-        colors[level.name]
+        colors[level.name],
       )
     }
 
     const payload = processData(ctx, args, {
       level,
-      label
+      label,
     })
 
     if (label) {
       params.push(`[${label}] `)
     }
 
-    if (typeof payload.ctx !== 'undefined') {
+    if (typeof payload.ctx !== "undefined") {
       params.push(payload.ctx)
     }
 
     // @ts-expect-error - not all methods are availalbe directly on console
     console[method](...params, ...payload.data)
-  }
-
-  /**
-   * Log to a remote endpoint
-   * @param level - the name of the level to be used
-   * @param args - arguments to be logged
-   */
-  protected logRemote(level: Level, args: any[]) {
-    //only send beacon if the default log level is bigger or equal to the beacon level
-    const { processData, url, send: sendData } = this.config.remote!
-    const { ctx, label } = this.config
-
-    const data = processData(ctx, args, {
-      level,
-      label
-    })
-
-    sendData(url, data)
   }
 
   /**
@@ -225,28 +189,6 @@ export default class Tinga<T = any> implements Tinga {
    */
   setLevel(level: LevelsByName) {
     this.config.level = resolveLevel(level, this.levels)
-  }
-
-  /**
-   * Gets remote logging level
-   */
-  getRemoteLevel() {
-    const { remote } = this.config
-
-    return remote ? remote?.level : undefined
-  }
-
-  /**
-   * Sets new remote logging level
-   * @param level - new logging level
-   */
-  setRemoteLevel(level: LevelsByName) {
-    const { remote } = this.config
-    if (!remote) {
-      throw new Error('remote not set')
-    }
-
-    remote.level = resolveLevel(level, this.levels)
   }
 
   /**
@@ -280,7 +222,7 @@ export default class Tinga<T = any> implements Tinga {
    */
   child<K = void>(config: ChildConfig<K, T> = {} as ChildConfig<K, T>) {
     const cfg: Config = { ...config }
-    if (typeof config.ctx === 'function') {
+    if (typeof config.ctx === "function") {
       // @ts-expect-error - type overload problem
       cfg.ctx = config.ctx(this.config.ctx)
     }

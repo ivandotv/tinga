@@ -11,13 +11,15 @@ import {
   resolveLevel
 } from "./utils"
 
+const white = "#fff"
+
 const colors = {
-  trace: generateStyles("#555", "#fff"),
-  debug: generateStyles("#7627f2", "#fff"),
-  info: generateStyles("#1f5bcc", "#fff"),
+  trace: generateStyles("#555", white),
+  debug: generateStyles("#7627f2", white),
+  info: generateStyles("#1f5bcc", white),
   warn: generateStyles("#f5a623", "#000"),
-  error: generateStyles("#f05033", "#fff"),
-  critical: generateStyles("#f05033", "#fff"),
+  error: generateStyles("#f05033", white),
+  critical: generateStyles("#f05033", white),
 }
 
 /**
@@ -27,7 +29,7 @@ const colors = {
 export default class Tinga<T = any> implements Tinga {
   protected config: InternaConfig
 
-  protected levels = Object.freeze({
+  protected levels = {
     trace: 10,
     debug: 20,
     info: 30,
@@ -35,7 +37,7 @@ export default class Tinga<T = any> implements Tinga {
     error: 50,
     critical: 60,
     silent: 100,
-  } as const)
+  } as const
 
   constructor(config: Config<T> = {}) {
     this.config = this.createConfig(config)
@@ -70,7 +72,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   trace(...args: any[]) {
-    this.logIt("trace", "trace", args)
+    this.logIt(args, "trace")
   }
 
   /**
@@ -78,7 +80,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   debug(...args: any[]) {
-    this.logIt("log", "debug", args)
+    this.logIt(args, "log", "debug",)
   }
 
   /**
@@ -86,7 +88,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   info(...args: any[]) {
-    this.logIt("log", "info", args)
+    this.logIt(args, "info")
   }
 
   //alias for info
@@ -96,7 +98,8 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   log(...args: any[]) {
-    this.info(...args)
+    // this.info(...args)
+    this.logIt(args, "log", "info")
   }
 
   /**
@@ -104,7 +107,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   warn(...args: any[]) {
-    this.logIt("warn", "warn", args)
+    this.logIt(args, "warn")
   }
 
   /**
@@ -112,7 +115,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   error(...args: any[]) {
-    this.logIt("error", "error", args)
+    this.logIt(args, "error")
   }
 
   /**
@@ -120,20 +123,20 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   critical(...args: any[]) {
-    this.logIt("error", "critical", args)
+    this.logIt(args, "error", "critical")
   }
 
   /**
    * Main logging implementation
-   * @param method - console log method to be used
-   * @param levelName - the name of the level to be used
    * @param args - arguments to be logged
+   * @param method - console log method to be used
+   * @param levelName - the name of the level to be used (defaults to method name)
    */
-  protected logIt(method: string, levelName: LevelsByName, args: any[]) {
-    const level: Level = { name: levelName, value: this.levels[levelName] }
-    const { level: currentLevel } = this.config
+  protected logIt(args: any[], method: string, levelName?: LevelsByName,) {
+    const levelByName = levelName || method as LevelsByName
+    const level: Level = { name: levelByName, value: this.levels[levelByName] }
 
-    if (level.value >= currentLevel.value) {
+    if (level.value >= this.config.level.value) {
       this.logLocal(method, level, args)
     }
 
@@ -166,7 +169,7 @@ export default class Tinga<T = any> implements Tinga {
       params.push(`[${label}] `)
     }
 
-    if (typeof payload.ctx !== "undefined") {
+    if (payload.ctx) {
       params.push(payload.ctx)
     }
 
@@ -225,6 +228,7 @@ export default class Tinga<T = any> implements Tinga {
       cfg.ctx = config.ctx(this.config.ctx)
     }
 
+    // biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
     return new Tinga<K extends void ? T : K>(cfg)
   }
 }

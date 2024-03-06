@@ -9,22 +9,19 @@ export function resolveLevel(level: string | number, logLevels: LogLevels) {
   let chosenLevel: Level | undefined
 
   for (const [key, value] of Object.entries(logLevels)) {
-    if (typeof level === "number") {
-      if (value === level) {
-        chosenLevel = {
-          name: key as LevelsByName,
-          value: level,
-        }
-        break
+    if (value === level) {
+      chosenLevel = {
+        name: key as LevelsByName,
+        value: level,
       }
-    } else {
-      if (key === level) {
-        chosenLevel = {
-          name: key as LevelsByName,
-          value,
-        }
-        break
+      break
+    }
+    if (key === level) {
+      chosenLevel = {
+        name: key as LevelsByName,
+        value,
       }
+      break
     }
   }
   if (!chosenLevel) {

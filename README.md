@@ -6,7 +6,7 @@ Small browser logging module with the ability to send logs to the remote endpoin
 [![Codecov](https://img.shields.io/codecov/c/gh/ivandotv/tinga)](https://app.codecov.io/gh/ivandotv/tinga)
 [![GitHub license](https://img.shields.io/github/license/ivandotv/tinga)](https://github.com/ivandotv/tinga/blob/main/LICENSE)
 
-Small ([~1KB](https://bundlephobia.com/package/tinga)) logging module primarily for the browser. It has a few logging levels that can be enabled and disabled at runtime. It also can automatically send the logs to a remote server (by default it uses `navigator.sendBeacon`).
+Small ([~1KB](https://bundlephobia.com/package/tinga)) logging module primarily for the browser. It has a few logging levels that can be enabled and disabled at runtime.
 
 ![screen](./assets/img-1.png)
 
@@ -18,7 +18,6 @@ Small ([~1KB](https://bundlephobia.com/package/tinga)) logging module primarily 
 - [Configuration](#configuration)
   - [Context](#context)
   - [Levels](#levels)
-  - [Remote Configuration](#remote-configuration)
   - [Child instances](#child-instances)
   - [Examples](#examples)
 
@@ -101,43 +100,6 @@ logger.getLevel()
 logger.setLevel('silent')
 logger.getLevels() // get all levels
 ```
-
-### Remote Configuration
-
-`Tinga` can automatically send logs to a remote endpoint via `navigator.sendBeacon`. All you need to set is the `url` and the `level` you want to be sent, remote level is different than the regular level, so for example you can log all levels, and only send `error` and `critical` levels to the remote endpoint. You can also completely overwrite the `send` function by providing your own, in the example below, I'm overriding the `send` function and using a `fetch` to send the data.
-
-```ts
-const config: Config = {
-  ctx: { name: 'Ivan' }, // context
-  label: 'demo',
-  remote: {
-    level: 'error',
-    url: 'https://my-logs.xzy',
-    send: (url, data) => {
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-    },
-    processData: (ctx, data) => {
-      return {
-        ctx,
-        data
-      }
-    }
-  }
-}
-```
-
-- `level`: level set explicitly for remote logging, you can change its runtime by using
-  `instance.getRemoteLevel()` and `instance.setRemoteLevel()`
-- `url`: URL for the remote endpoint
-- `send`: custom function to send the data
-- `processData`: You can use this function to determine what exactly and in what format you want to send. whatever is returned from this function will be passed to the `send` function as the `data` arguments.
 
 ### Child instances
 

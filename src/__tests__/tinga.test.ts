@@ -56,12 +56,11 @@ describe("Tinga", () => {
       payload,
     )
 
-    expect(console.log).toHaveBeenCalledTimes(3)
+    expect(console.log).toHaveBeenCalledTimes(2)
     expect(console.log).toHaveBeenNthCalledWith(
       1,
       expect.any(String),
       expect.any(String),
-
       payload,
     )
     expect(console.log).toHaveBeenNthCalledWith(
@@ -70,8 +69,10 @@ describe("Tinga", () => {
       expect.any(String),
       payload,
     )
-    expect(console.log).toHaveBeenNthCalledWith(
-      3,
+
+    expect(console.info).toHaveBeenCalledTimes(1)
+    expect(console.info).toHaveBeenNthCalledWith(
+      1,
       expect.any(String),
       expect.any(String),
       payload,

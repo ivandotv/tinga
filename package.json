@@ -15,18 +15,21 @@
   "author": "Ivan Vlatkovic",
   "license": "MIT",
   "type": "module",
-  "main": "./dist/prod/index.cjs",
-  "module": "./dist/prod/index.modern.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    "require": "./dist/prod/index.cjs",
-    "development": "./dist/dev/index.modern.js",
-    "default": "./dist/prod/index.modern.js"
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
-  "types": "./dist/types/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
     "lint": "eslint --fix \"src/**/\"",
     "lint:check": "eslint \"src/**/\"",
@@ -36,9 +39,7 @@
     "test": "jest --verbose --coverage",
     "test:watch": "jest --watch",
     "test:ci": "jest --runInBand --ci --coverage --coverageDirectory=coverage",
-    "build:prod": "cross-env NODE_ENV=production microbundle --tsconfig ./tsconfig.json  --format modern,cjs  --output dist/prod/index.js",
-    "build:dev": "cross-env NODE_ENV=development microbundle --define process.env.NODE_ENV=development --tsconfig ./tsconfig.json --generateTypes false --format modern --output dist/dev/index.js",
-    "build": "rm -rf ./dist && pnpm build:dev && pnpm build:prod",
+    "build": "shx rm -rf ./dist && NODE_ENV=production microbundle --tsconfig ./tsconfig.json  --format modern,cjs  --output dist/index.js && shx cp  ./dist/index.d.ts ./dist/index.d.cts",
     "gen:docs": "rm -rf ./docs/api && typedoc --theme markdown --readme none --excludePrivate  --excludeInternal --exclude ./src/globals.d.ts --exclude ./src/__tests__ --out docs/api ./src",
     "prepublishOnly": "pnpm build",
     "prepare": "husky install",
@@ -53,18 +54,12 @@
   },
   "homepage": "https://github.com/ivandotv/tinga#readme",
   "devDependencies": {
-    "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
-    "@babel/preset-typescript": "^7.16.7",
     "@biomejs/biome": "1.5.3",
     "@changesets/cli": "^2.22.0",
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.30",
     "@typescript-eslint/eslint-plugin": "^5.21.0",
     "@typescript-eslint/parser": "^5.21.0",
-    "babel-plugin-dev-expression": "^0.2.3",
-    "babel-plugin-transform-define": "^2.0.1",
-    "cross-env": "^7.0.3",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^26.1.5",

@@ -1,9 +1,4 @@
-import {
-  Level,
-  LevelsByName,
-  LogLevels,
-  ProcessData,
-} from "./types"
+import { Level, LevelsByName, LogLevels, ProcessData } from "./types"
 
 export function resolveLevel(level: string | number, logLevels: LogLevels) {
   let chosenLevel: Level | undefined
@@ -34,7 +29,6 @@ export function resolveLevel(level: string | number, logLevels: LogLevels) {
 export function generateStyles(bg: string, color: string) {
   return `background:${bg};color:${color};padding:2px;border-radius:2px;`
 }
-
 
 export const processData: ProcessData = (ctx, data: any[]) => {
   return {

@@ -19,8 +19,6 @@ describe("Tinga", () => {
     spyOnConsole()
   })
 
-
-
   describe("Child logger", () => {
     test("is instance of Tinga", () => {
       const parent = new Tinga()

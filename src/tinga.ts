@@ -5,11 +5,7 @@ import {
   Level,
   LevelsByName,
 } from "./types"
-import {
-  generateStyles,
-  processData,
-  resolveLevel
-} from "./utils"
+import { generateStyles, processData, resolveLevel } from "./utils"
 
 const white = "#fff"
 
@@ -49,10 +45,7 @@ export default class Tinga<T = any> implements Tinga {
    * @returns final configuration
    */
   protected createConfig(config: Config) {
-    const level = resolveLevel(
-      config.level || this.levels.trace,
-      this.levels,
-    )
+    const level = resolveLevel(config.level || this.levels.trace, this.levels)
 
     const { label, ctx } = config
 
@@ -80,7 +73,7 @@ export default class Tinga<T = any> implements Tinga {
    * @param args - console log arguments
    */
   debug(...args: any[]) {
-    this.logIt(args, "log", "debug",)
+    this.logIt(args, "log", "debug")
   }
 
   /**
@@ -132,14 +125,13 @@ export default class Tinga<T = any> implements Tinga {
    * @param method - console log method to be used
    * @param levelName - the name of the level to be used (defaults to method name)
    */
-  protected logIt(args: any[], method: string, levelName?: LevelsByName,) {
-    const levelByName = levelName || method as LevelsByName
+  protected logIt(args: any[], method: string, levelName?: LevelsByName) {
+    const levelByName = levelName || (method as LevelsByName)
     const level: Level = { name: levelByName, value: this.levels[levelByName] }
 
     if (level.value >= this.config.level.value) {
       this.logLocal(method, level, args)
     }
-
   }
 
   /**

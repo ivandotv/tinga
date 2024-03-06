@@ -1,5 +1,15 @@
 # tinga
 
+## 6.0.0
+
+### Major Changes
+
+- 31f5fe7: remove send beacon functionality
+
+### Patch Changes
+
+- e66dfb4: update readme
+
 ## 5.1.0
 
 ### Minor Changes

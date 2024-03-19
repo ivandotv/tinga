@@ -1,5 +1,11 @@
 # tinga
 
+## 6.0.1
+
+### Patch Changes
+
+- 2fe5e00: chore: add "files" key to package file
+
 ## 6.0.0
 
 ### Major Changes

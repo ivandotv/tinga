@@ -60,7 +60,7 @@
     "jsdom": "^24.0.0",
     "lefthook": "^1.6.5",
     "microbundle": "^0.15.1",
-    "shx": "^0.3.4",
+    "shx": "^0.4.0",
     "typedoc": "^0.25.11",
     "typedoc-plugin-markdown": "^3.17.1",
     "typescript": "^5.3.3",
